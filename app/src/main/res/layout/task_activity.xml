@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    >
+
+    <!--<android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorPrimary"/>-->
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/task_title"
+        android:id="@+id/task"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_toRightOf="@+id/task"
+        android:id="@+id/task_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Снятие отчета"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"
+        />
+
+    <TextView
+        android:layout_below="@+id/task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/adress"
+        android:id="@+id/ad"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/task"
+        android:layout_toRightOf="@+id/ad"
+        android:id="@+id/adress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Илюшина 40"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tel"
+        android:id="@+id/tel"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/ad"
+        android:layout_toRightOf="@+id/tel"
+        android:id="@+id/telefon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="89111267546"
+        android:textSize="18sp"
+        android:autoLink="phone"
+        android:clickable="true"
+        android:textColor="@android:color/holo_blue_bright"/>
+
+    <TextView
+        android:layout_below="@+id/tel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/what_to_do"
+        android:id="@+id/what_to_do"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/tel"
+        android:layout_toRightOf="@+id/what_to_do"
+        android:id="@+id/task_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Снять вычисления с узла учета в теплоцентре, забрать отчеты за предыдущие месяцы"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/task_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/time_spot"
+        android:id="@+id/time_spot"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_toRightOf="@+id/time_spot"
+        android:layout_below="@id/task_body"
+        android:id="@+id/deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="20 мар 2017 18:30"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"
+        />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/deadline"
+        android:id="@+id/hover_comment"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@+id/deadline"
+        android:id="@+id/commentFromUser"
+        android:hint="@string/commentFromUser"
+        android:gravity="start"
+        android:background="@color/lightGreen"
+        android:textColor="@color/darkGreen"
+        />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/done"
+        android:layout_below="@+id/hover_comment"
+        android:text="@string/doneBtn"
+        android:background="@color/darkGreen"
+        android:textColor="@android:color/white"/>
+
+</RelativeLayout>

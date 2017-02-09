@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        tools:text = "1"
+        android:id="@+id/firstLetter"
+        android:textSize="27sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_toRightOf="@id/firstLetter"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        tools:text = "Поменять трубы на периметре с девятого по двадцать первый этаж и покрасить крышу"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/firstLetter"
+        android:layout_below="@+id/title"
+        android:id="@+id/body"
+        android:maxLines="2"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:id="@+id/adress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text = "Савушкина, 25"
+        android:layout_below="@+id/body"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/body"
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text = "15 янв 20:00"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/darkGreen"/>
+
+    <!--<Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/doneBtn"
+        android:text="@string/doneBtn"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"/>-->
+
+</RelativeLayout>

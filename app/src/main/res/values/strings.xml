@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Client1</string>
+    <string name="write_text">Веедите текст</string>
+    <string name="send">Отправить</string>
+    <string name="write_name">Ввести логин</string>
+    <string name="write_pwd">Ввести пароль</string>
+    <string name="register">Зарегестрироваться</string>
+    <string name="sign_in">Войти</string>
+    <string name="doneBtn">Сделано</string>
+    <string name="task_title">Задание: </string>
+    <string name="adress">Адрес: </string>
+    <string name="what_to_do">Что сделать: </string>
+    <string name="time_spot">Крайний срок: </string>
+    <string name="commentFromUser">Комментарий </string>
+    <string name="tel">Контакты: </string>
+</resources>
