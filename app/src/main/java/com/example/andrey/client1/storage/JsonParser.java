@@ -1,6 +1,7 @@
 package com.example.andrey.client1.storage;
 
 import com.example.andrey.client1.entities.Request;
+import com.example.andrey.client1.entities.Response;
 import com.example.andrey.client1.entities.User;
 import com.google.gson.Gson;
 
@@ -10,9 +11,11 @@ public class JsonParser {
         return new Gson().toJson(new User(name, password));
     }
 
-    public String requestAuth(Request request){
-        Gson gson = new Gson();
-        String str = gson.toJson(request);
-        return str;
+    public Response parseFromServerUserTasks(String str){
+        return new Gson().fromJson(str, Response.class);
+    }
+
+    public String requestToServer(Request request){
+        return new Gson().toJson(request);
     }
 }

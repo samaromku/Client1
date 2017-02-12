@@ -4,6 +4,7 @@ public class Request {
     private String request;
     private User user;
     private Task task;
+    public static final String ADD_TASK_TO_SERVER = "add_task_to_server";
 
     public Request(Task task, String request){
         this.task = task;

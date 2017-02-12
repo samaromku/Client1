@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,24 +29,20 @@ public class AuthActivity extends AppCompatActivity {
         writeName = (EditText) findViewById(R.id.write_name);
         writePwd = (EditText) findViewById(R.id.write_pwd);
         System.out.println("пытаемся запустить клиент");
-        //if(!Client.INSTANCE.isConnected()) {
-        //System.out.println(Client.INSTANCE.isConnected());
-            Client.INSTANCE.start();
-          //  Client.INSTANCE.setConnected(true);
-            System.out.println("клиент запущен");
-        //System.out.println(Client.INSTANCE.isConnected());
-        //}
 
+            Client.INSTANCE.start();
+            System.out.println("клиент запущен");
+        if(!Client.INSTANCE.isConnected()){
+            Client.INSTANCE.setConnected(true);
+        }
 
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Client.INSTANCE.sendMessage(parser.parseAuthUser(writeName.getText().toString(), writePwd.getText().toString()));
-                Client.INSTANCE.sendMessage(parser.requestAuth(new Request(new User(writeName.getText().toString(), writePwd.getText().toString()), "auth")));
+                Client.INSTANCE.sendMessage(parser.requestToServer(new Request(new User(writeName.getText().toString(), writePwd.getText().toString()), "auth")));
                 writeName.setText("");
                 writePwd.setText("");
-                Intent intent = new Intent(AuthActivity.this, AccountActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(AuthActivity.this, AccountActivity.class).putExtra("fromAuth", "fromAuth"));
             }
         });
     }

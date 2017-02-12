@@ -1,11 +1,13 @@
 package com.example.andrey.client1.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.andrey.client1.entities.Client;
 import com.example.andrey.client1.storage.OnListItemClickListener;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.entities.Task;
@@ -31,6 +33,12 @@ import java.util.List;
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.bind(tasks.get(position));
+            if(Client.INSTANCE.getTaskList().get(position).isDone()) {
+                holder.itemView.setBackgroundColor(Color.GRAY);
+                holder.itemView.setClickable(false);
+            }else
+                holder.itemView.setBackgroundColor(Color.WHITE);
+
         }
 
         @Override

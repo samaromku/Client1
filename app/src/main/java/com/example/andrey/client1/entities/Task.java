@@ -1,12 +1,12 @@
 package com.example.andrey.client1.entities;
 
 public class Task {
-    private String id;
+    private int id;
     private String title;
     private String body;
     private String created;
     private boolean done;
-    private String doneTime = "-1";
+    private String doneTime;
     private String user;
     private String adress;
     private String telephone;
@@ -36,11 +36,11 @@ public class Task {
         this.adress = adress;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -92,8 +92,8 @@ public class Task {
         this.doneTime = doneTime;
     }
 
-    public Task(String title, String body, String created, boolean done, String doneTime, String user, String adress, String telephone, String comment) {
-        this.id = String.valueOf((int)(Math.random()*100));
+    public Task(int id, String title, String body, String created, boolean done, String doneTime, String user, String adress, String telephone, String comment) {
+        this.id = id;
         this.title = title;
         this.body = body;
         this.created = created;
