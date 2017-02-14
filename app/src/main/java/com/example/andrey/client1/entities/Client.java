@@ -17,6 +17,7 @@ import java.util.List;
 
 public class Client {
     public static final Client INSTANCE = new Client();
+    //private static final String hostName = "192.168.0.121";
     private static final String hostName = "192.168.0.186";
     private static final int portNumber = 60123;
     private static final String debugString = "дебаг";
@@ -135,7 +136,7 @@ public class Client {
                 } else {
                     role = "guestRole";
                     removeOldTasks();
-                    taskList.add(new Task(0,"Вы гость", "Вы не зарегестрированы в системе", null, false, null, null, null, null, null));
+                    taskList.add(new Task(0,"Вы гость", "Вы не зарегестрированы в системе", null, true, null, null, null, null, null));
                         for (int i = 0; i < taskList.size(); i++) {
                         System.out.println(taskList.get(i).getBody());
                     }
@@ -143,7 +144,7 @@ public class Client {
             } else {
                 role = "guestRole";
                 removeOldTasks();
-                taskList.add(new Task(0,"Вы гость", "Вы не зарегестрированы в системе", null, false, null, null, null, null, null));
+                taskList.add(new Task(0,"Вы гость", "Вы не зарегестрированы в системе", null, true, null, null, null, null, null));
                 for (int i = 0; i < taskList.size(); i++) {
                     System.out.println(taskList.get(i).getBody());
                 }
@@ -151,7 +152,7 @@ public class Client {
         }else{
             role = null;
             removeOldTasks();
-            taskList.add(new Task(0,"Нет соединения", "Отсутствует подключение к серверу", null, false, null, null, null, null, null));
+            taskList.add(new Task(0,"Нет соединения", "Отсутствует подключение к серверу", null, true, null, null, null, null, null));
             for (int i = 0; i < taskList.size(); i++) {
                 System.out.println(taskList.get(i).getBody());
             }
