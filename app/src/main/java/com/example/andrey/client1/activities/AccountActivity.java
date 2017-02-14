@@ -84,6 +84,10 @@ public class AccountActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 startActivity(new Intent(AccountActivity.this, AuthActivity.class));
+                return true;
+
+            case R.id.users:
+                startActivity(new Intent(AccountActivity.this, UsersActivity.class));
             return true;
 
             default:

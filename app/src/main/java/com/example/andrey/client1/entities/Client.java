@@ -17,8 +17,8 @@ import java.util.List;
 
 public class Client {
     public static final Client INSTANCE = new Client();
-    //private static final String hostName = "192.168.0.121";
-    private static final String hostName = "192.168.0.186";
+    //private static final String hostName = "192.168.0.121";  // ноут алины
+    private static final String hostName = "192.168.0.186";     //мой комп
     private static final int portNumber = 60123;
     private static final String debugString = "дебаг";
     private Socket socket = null;
@@ -133,7 +133,11 @@ public class Client {
                     for (int i = 0; i < taskList.size(); i++) {
                         System.out.println(taskList.get(i).getBody());
                     }
-                } else {
+                }
+                else if(parser.parseFromServerUserTasks(response).getResponse().equals("add_task_success")){
+                    taskList.add(parser.parseFromServerUserTasks(response).getTask());
+                }
+                else {
                     role = "guestRole";
                     removeOldTasks();
                     taskList.add(new Task(0,"Вы гость", "Вы не зарегестрированы в системе", null, true, null, null, null, null, null));

@@ -7,9 +7,9 @@
     android:padding="8dp">
 
     <TextView
-        android:layout_width="30dp"
+        android:layout_width="35dp"
         android:layout_height="30dp"
-        tools:text = "1"
+        tools:text = "12"
         android:id="@+id/firstLetter"
         android:textSize="27sp"
         android:gravity="center"
