@@ -5,9 +5,14 @@ public class Request {
     private User user;
     private Task task;
     public static final String ADD_TASK_TO_SERVER = "add_task_to_server";
+    public static final String WANT_SOME_COMMENTS = "give_me_comments_by_task_id";
 
     public Request(Task task, String request){
         this.task = task;
+        this.request = request;
+    }
+
+    public Request(String request){
         this.request = request;
     }
 

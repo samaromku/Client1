@@ -28,26 +28,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Button send = (Button) findViewById(R.id.send);
-
-
-//        new Thread() {
-//            public void run() {
-//                try
-//            {
-//            Log.i(debugString, "пытаемся подключиться к серверу");
-//            socket = new Socket(hostName, portNumber);
-//            Log.i(debugString, "удалось подключиться к серверу");
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                String data;
-//                while((data = reader.readLine())!=null) {
-//                    System.out.println("Сообщение от сервера: " + data);
-//                }
-//            } catch (IOException e)
-//                {
-//                    Log.e(debugString, e.getMessage());
-//                }
-//            }
-//        }.start();
     }
 
     public void sendMessage(View view) {

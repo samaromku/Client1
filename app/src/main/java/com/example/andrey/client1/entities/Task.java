@@ -1,39 +1,51 @@
 package com.example.andrey.client1.entities;
 
+import java.util.List;
+
 public class Task {
     private int id;
-    private String title;
-    private String body;
     private String created;
-    private boolean done;
+    private String importance;
+    private String body;
+    private String status;
+    private String type;
     private String doneTime;
-    private String user;
-    private String adress;
-    private String telephone;
-    private String commentFromUser;
+    private int userId;
+    private String address;
+    private String orgName;
+    private List<Comment> comments;
+    private Comment comment;
 
-    public String getCommentFromUser() {
-        return commentFromUser;
+    public static final String NEW_TASK = "new_task";
+    public static final String DISTRIBUTED_TASK = "distributed";
+    public static final String DOING_TASK = "doing";
+    public static final String DONE_TASK = "done";
+    public static final String DISAGREE_TASK = "disagree";
+    public static final String CONTROL_TASK = "control";
+    public static final String NEED_HELP = "need_help";
+
+    public Comment getComment() {
+        return comment;
     }
 
-    public void setCommentFromUser(String commentFromUser) {
-        this.commentFromUser = commentFromUser;
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getType() {
+        return type;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getId() {
@@ -44,20 +56,20 @@ public class Task {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getCreated() {
+        return created;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
-    public String getUser() {
-        return user;
+    public String getImportance() {
+        return importance;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setImportance(String importance) {
+        this.importance = importance;
     }
 
     public String getBody() {
@@ -68,20 +80,12 @@ public class Task {
         this.body = body;
     }
 
-    public String getCreated() {
-        return created;
+    public String getStatus() {
+        return status;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public boolean isDone() {
-        return done;
-    }
-
-    public void setDone(boolean done) {
-        this.done = done;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getDoneTime() {
@@ -92,16 +96,40 @@ public class Task {
         this.doneTime = doneTime;
     }
 
-    public Task(int id, String title, String body, String created, boolean done, String doneTime, String user, String adress, String telephone, String comment) {
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public Task(int id, String created, String importance, String body, String status, String type, String doneTime, int userId, String address, String orgName) {
         this.id = id;
-        this.title = title;
-        this.body = body;
         this.created = created;
-        this.done = done;
+        this.importance = importance;
+        this.body = body;
+        this.type = type;
+        this.status = status;
         this.doneTime = doneTime;
-        this.user = user;
-        this.adress = adress;
-        this.telephone = telephone;
-        this.commentFromUser = comment;
+        this.userId = userId;
+        this.address = address;
+        this.orgName = orgName;
     }
 }

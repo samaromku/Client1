@@ -1,7 +1,9 @@
 package com.example.andrey.client1.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.andrey.client1.entities.Client;
+import com.example.andrey.client1.entities.Request;
 import com.example.andrey.client1.entities.User;
+import com.example.andrey.client1.storage.JsonParser;
 import com.example.andrey.client1.storage.OnListItemClickListener;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.adapter.TasksAdapter;
@@ -23,12 +27,11 @@ public class AccountActivity extends AppCompatActivity {
     FloatingActionButton addTask;
     private TasksAdapter adapter;
     private RecyclerView tasksList;
+    private JsonParser parser = new JsonParser();
 
-    private OnListItemClickListener clickListener = new OnListItemClickListener() {
-        @Override
-        public void onClick(View v, int position) {
-            startActivity(new Intent(AccountActivity.this, TaskActivity.class).putExtra("taskNumber", position));
-        }
+    private OnListItemClickListener clickListener = (v, position) -> {
+        Client.INSTANCE.sendMessage(parser.requestToServer(new Request(Client.INSTANCE.getTaskList().get(position), Request.WANT_SOME_COMMENTS)));
+        startActivity(new Intent(AccountActivity.this, TaskActivity.class).putExtra("taskNumber", position));
     };
 
     @Override
@@ -36,10 +39,8 @@ public class AccountActivity extends AppCompatActivity {
         checkFromAuth();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_activity);
-
-        getSupportActionBar().setTitle("Аккаунт");
+        getSupportActionBar().setTitle("Account");
         tasksList = (RecyclerView) findViewById(R.id.tasks_list);
-        System.out.println(Client.INSTANCE.getRole());
         addTask = (FloatingActionButton) findViewById(R.id.add_task_btn);
         if(Client.INSTANCE.getRole()!=null && Client.INSTANCE.getRole().equals(User.ADMIN_ROLE)){
             addTask.setVisibility(View.VISIBLE);
@@ -51,12 +52,7 @@ public class AccountActivity extends AppCompatActivity {
         }else
             System.out.println("role = " + Client.INSTANCE.getRole());
 
-        addTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AccountActivity.this, CreateTaskActivity. class));
-            }
-        });
+        addTask.setOnClickListener(v -> startActivity(new Intent(AccountActivity.this, CreateTaskActivity.class)));
 
         tasksList.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TasksAdapter(Client.INSTANCE.getTaskList(), clickListener);
@@ -85,6 +81,11 @@ public class AccountActivity extends AppCompatActivity {
                 }
                 startActivity(new Intent(AccountActivity.this, AuthActivity.class));
                 return true;
+
+            case R.id.refresh:
+                adapter.notifyDataSetChanged();
+                return true;
+
 
             case R.id.users:
                 startActivity(new Intent(AccountActivity.this, UsersActivity.class));

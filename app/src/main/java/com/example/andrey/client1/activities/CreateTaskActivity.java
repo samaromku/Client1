@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.entities.Client;
@@ -41,7 +40,7 @@ public class CreateTaskActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_task_activity);
-        getSupportActionBar().setTitle("Создание задания");
+        getSupportActionBar().setTitle("Create Task");
         init();
         System.out.println(new DateUtil().currentDate());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, data);
@@ -55,28 +54,28 @@ public class CreateTaskActivity extends AppCompatActivity{
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                userName = users.get(position).getName();
+                userName = users.get(position).getLogin();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                userName = users.get(0).getName();
+                userName = users.get(0).getLogin();
             }
         });
 
         createTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Client.INSTANCE.sendMessage(parser.requestToServer(new Request(new Task(Client.INSTANCE.getTaskList().size()+1,
-                        taskTitle.getText().toString(),
-                        taskBody.getText().toString(),
-                        dateUtil.currentDate(),
-                        false,
-                        doneTime.getText().toString(),
-                        userName,
-                        taskAdress.getText().toString(),
-                        telephone.getText().toString(),
-                        null), Request.ADD_TASK_TO_SERVER)));
+//                Client.INSTANCE.sendMessage(parser.requestToServer(new Request(new Task(Client.INSTANCE.getTaskList().size()+1,
+//                        orgName.getText().toString(),
+//                        taskBody.getText().toString(),
+//                        dateUtil.currentDate(),
+//                        false,
+//                        doneTime.getText().toString(),
+//                        userName,
+//                        taskAdress.getText().toString(),
+//                        telephone.getText().toString(),
+//                        null), Request.ADD_TASK_TO_SERVER)));
                 taskTitle.setText("");
                 taskBody.setText("");
                 doneTime.setText("");
@@ -98,7 +97,7 @@ public class CreateTaskActivity extends AppCompatActivity{
         users.addAll(Client.INSTANCE.getUsers());
         data = new String[users.size()];
         for (int i = 0; i < users.size(); i++) {
-            data[i] = users.get(i).getName();
+            data[i] = users.get(i).getLogin();
         }
     }
 }

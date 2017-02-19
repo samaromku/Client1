@@ -32,6 +32,8 @@
 
         </activity>
 
+        <activity android:name=".activities.UserActivity"></activity>
+
         <activity android:name=".activities.CreateUserActivity"></activity>
 
         <activity android:name=".activities.UsersActivity"></activity>

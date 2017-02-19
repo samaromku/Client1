@@ -10,4 +10,9 @@
         android:title="@string/users"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_name" />
+
+    <item android:id="@+id/refresh"
+        android:title="@string/refresh"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/refresh" />
 </menu>

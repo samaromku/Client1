@@ -6,15 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.andrey.client1.R;
 
-/**
- * Created by andrey on 14.02.2017.
- */
-
-public class CreateUserActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_user);
-        getSupportActionBar().setTitle("Create User");
+        setContentView(R.layout.user_activity);
     }
 }

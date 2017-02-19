@@ -1,44 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    >
-
-    <!--<android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/colorPrimary"/>-->
-
+    android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/task_title"
-        android:id="@+id/task"
+        android:id="@+id/type"
+        android:text="@string/type_task"
         android:textStyle="bold"
         android:layout_marginRight="8dp"
         android:textSize="18sp"
         android:textColor="@color/darkGreen"/>
 
     <TextView
-        android:layout_toRightOf="@+id/task"
-        android:id="@+id/task_title"
+        android:layout_toRightOf="@+id/type"
+        android:id="@+id/type_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Снятие отчета"
+        tools:text="УУИТП"
         android:textSize="18sp"
         android:textColor="@color/darkGreen"
         />
 
     <TextView
-        android:layout_below="@+id/task"
+        android:layout_below="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/adress"
+        android:id="@+id/important"
+        android:text="@string/important"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/type"
+        android:layout_toRightOf="@+id/important"
+        android:id="@+id/importance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="аварийная"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"
+        />
+
+    <TextView
+        android:layout_below="@+id/important"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/org_name"
+        android:id="@+id/name_of_org"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/important"
+        android:layout_toRightOf="@+id/name_of_org"
+        android:id="@+id/org_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="ЖСК 10"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"
+        />
+
+    <TextView
+        android:layout_below="@+id/name_of_org"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/address"
         android:id="@+id/ad"
         android:textStyle="bold"
         android:layout_marginRight="8dp"
@@ -46,9 +86,9 @@
         android:textColor="@color/darkGreen"/>
 
     <TextView
-        android:layout_below="@+id/task"
+        android:layout_below="@+id/name_of_org"
         android:layout_toRightOf="@+id/ad"
-        android:id="@+id/adress"
+        android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Илюшина 40"
@@ -149,4 +189,45 @@
         android:background="@color/darkGreen"
         android:textColor="@android:color/white"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/done"
+        android:id="@+id/butt_layout"
+        android:layout_marginTop="8dp"
+        >
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/holo_blue_light"
+            android:textColor="@android:color/white"
+            android:layout_marginRight="4dp"
+            android:text="@string/need_help"
+            android:id="@+id/need_help"
+            />
+
+        <Button
+            android:layout_marginLeft="4dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_red_dark"
+            android:textColor="@android:color/white"
+            android:text="@string/disagree"
+            android:id="@+id/disagree"
+            />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/butt_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/comments"/>
+
 </RelativeLayout>
+    </ScrollView>

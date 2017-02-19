@@ -8,7 +8,12 @@ public class Response {
     private Task task;
     private List<Task> taskList;
     private List<User> userList;
+    private List<Comment> comments;
     public static final String ADD_TASKS_TO_USER = "addTasksToUser";
+
+    public List<Comment> getComments() {
+        return comments;
+    }
 
     public List<Task> getTaskList() {
         return taskList;

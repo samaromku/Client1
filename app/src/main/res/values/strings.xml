@@ -8,15 +8,20 @@
     <string name="sign_in">Войти</string>
     <string name="doneBtn">Сделано</string>
     <string name="task_title">Задание: </string>
-    <string name="adress">Адрес: </string>
+    <string name="address">Адрес: </string>
     <string name="what_to_do">Что сделать: </string>
     <string name="time_spot">Крайний срок: </string>
     <string name="commentFromUser">Комментарий </string>
     <string name="tel">Контакты: </string>
     <string name="logout">Выйти </string>
     <string name="users">Пользователи </string>
+    <string name="refresh">Обновить </string>
+    <string name="need_help">Помощь </string>
+    <string name="disagree">Отказ </string>
 
-    <string name="task_name">Название задания </string>
+    <string name="org_name">Имя организации: </string>
+    <string name="important">Важность: </string>
+    <string name="type_task">Тип заявки: </string>
     <string name="task_body">Что нужно сделать</string>
     <string name="done_time">Крайний срок выполнения </string>
     <string name="user_name">Исполнитель </string>
