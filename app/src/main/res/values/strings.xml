@@ -19,6 +19,24 @@
     <string name="need_help">Помощь </string>
     <string name="disagree">Отказ </string>
 
+    <string name="login">Логин: </string>
+    <string name="fio">ФИО: </string>
+    <string name="role">Права: </string>
+    <string name="phone">Телефон: </string>
+    <string name="email">Почта: </string>
+
+    <string name="make_new_user">Создать пользователя </string>
+    <string name="make_tasks">Создание заявки </string>
+    <string name="correction_task">Изменение заявки </string>
+    <string name="make_address">Создание объектов </string>
+    <string name="watch_address">Просмотр объектов </string>
+    <string name="correction_status">Корректировка статуса </string>
+    <string name="make_executor">Назначить исполнителя </string>
+    <string name="correction_executor">Изменить исполнителя </string>
+    <string name="watch_tasks">Просмотр заявок </string>
+    <string name="comment_tasks">Комментирование заявок </string>
+    <string name="change_password">Смена пароля </string>
+
     <string name="org_name">Имя организации: </string>
     <string name="important">Важность: </string>
     <string name="type_task">Тип заявки: </string>
@@ -28,4 +46,13 @@
     <string name="task_adress">Адрес заказчика</string>
     <string name="telephone">Телефон заказчика </string>
     <string name="create_task">Создать задание </string>
+    <string name="addresses">Адреса</string>
+    <string name="password">Пароль:</string>
+    <string name="create">Создать</string>
+    <string name="user_id">id юзера, можно только больше</string>
+    <string name="choose_date">Выбрать дату</string>
+    <string name="enter_date_formate">введите дату в формате, дд.мм.гггг</string>
+    <string name="inside_ip">Внутренняя сеть</string>
+    <string name="user_name_task">Имя пользователя:</string>
+    <string name="map">Карта</string>
 </resources>

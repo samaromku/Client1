@@ -7,14 +7,16 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
+        android:name=".activities.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity">
-        </activity>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCE_Ts_dixz3hX49hVSpgFW5vHwLwofUoo"/>
 
+        <service android:name=".service.GpsService"/>
         <activity android:name=".activities.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,22 +24,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.AccountActivity">
-
-
-        </activity>
-
-        <activity android:name=".activities.CreateTaskActivity">
-
-        </activity>
-
-        <activity android:name=".activities.UserActivity"></activity>
-
-        <activity android:name=".activities.CreateUserActivity"></activity>
-
-        <activity android:name=".activities.UsersActivity"></activity>
-
+        <activity android:name=".activities.MapActivity"/>
+        <activity android:name=".activities.MainActivity"/>
+        <activity android:name=".activities.AddressActivity"/>
+        <activity android:name=".activities.UserRoleActivity"/>
+        <activity android:name=".activities.AccountActivity" android:configChanges="orientation"/>
+        <activity android:name=".activities.CreateTaskActivity"/>
+        <activity android:name=".activities.UserActivity"/>
+        <activity android:name=".activities.CreateUserActivity"/>
+        <activity android:name=".activities.UsersActivity"/>
         <activity android:name=".activities.TaskActivity"
             android:windowSoftInputMode="adjustResize">
 

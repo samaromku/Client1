@@ -1,7 +1,5 @@
 package com.example.andrey.client1.entities;
 
-import java.util.List;
-
 public class Task {
     private int id;
     private String created;
@@ -11,33 +9,25 @@ public class Task {
     private String type;
     private String doneTime;
     private int userId;
+    private int addressId;
     private String address;
     private String orgName;
-    private List<Comment> comments;
-    private Comment comment;
 
-    public static final String NEW_TASK = "new_task";
-    public static final String DISTRIBUTED_TASK = "distributed";
-    public static final String DOING_TASK = "doing";
-    public static final String DONE_TASK = "done";
-    public static final String DISAGREE_TASK = "disagree";
-    public static final String CONTROL_TASK = "control";
-    public static final String NEED_HELP = "need_help";
+    public static final String NEW_TASK = "новое задание";
+    public static final String DISTRIBUTED_TASK = "распределено";
+    public static final String DOING_TASK = "выполняется";
+    public static final String DONE_TASK = "выполнено";
+    public static final String DISAGREE_TASK = "отказ";
+    public static final String CONTROL_TASK = "контроль";
+    public static final String NEED_HELP = "нужна помощь";
 
-    public Comment getComment() {
-        return comment;
+
+    public int getAddressId() {
+        return addressId;
     }
 
-    public void setComment(Comment comment) {
-        this.comment = comment;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
     }
 
     public String getType() {
@@ -120,7 +110,7 @@ public class Task {
         this.orgName = orgName;
     }
 
-    public Task(int id, String created, String importance, String body, String status, String type, String doneTime, int userId, String address, String orgName) {
+    public Task(int id, String created, String importance, String body, String status, String type, String doneTime, int userId, int addressId) {
         this.id = id;
         this.created = created;
         this.importance = importance;
@@ -129,7 +119,8 @@ public class Task {
         this.status = status;
         this.doneTime = doneTime;
         this.userId = userId;
-        this.address = address;
-        this.orgName = orgName;
+        this.addressId = addressId;
     }
+
+    public Task(){}
 }

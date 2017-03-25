@@ -4,9 +4,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class SHAHashing {
-    public String hashPwd(String pwd) throws NoSuchAlgorithmException {
+    private MessageDigest md;
+    public String hashPwd(String pwd) {
+
         String password = pwd;
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         md.update(password.getBytes());
         byte byteData[] = md.digest();
         //convert the byte to hex format method 1

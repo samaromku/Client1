@@ -1,7 +1,7 @@
 package com.example.andrey.client1.storage;
 
-import com.example.andrey.client1.entities.Request;
-import com.example.andrey.client1.entities.Response;
+import com.example.andrey.client1.network.Request;
+import com.example.andrey.client1.network.Response;
 import com.example.andrey.client1.entities.User;
 import com.google.gson.Gson;
 

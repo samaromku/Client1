@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.andrey.client1.R;
-import com.example.andrey.client1.entities.Client;
 import com.example.andrey.client1.entities.Comment;
+import com.example.andrey.client1.managers.UsersManager;
+import com.example.andrey.client1.storage.DataWorker;
 import com.example.andrey.client1.storage.OnListItemClickListener;
 
 import java.util.List;
@@ -55,12 +56,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         public void bind(Comment comment) {
             date.setText(comment.getTs());
             body.setText(comment.getBody());
-            String userLogin = "";
-            for (int i = 0; i < Client.INSTANCE.getUsers().size(); i++) {
-                if(Client.INSTANCE.getUsers().get(i).getId()==(comment.getUserId())){
-                    userLogin = Client.INSTANCE.getUsers().get(i).getLogin();
-                }
-            }
+            String userLogin = UsersManager.INSTANCE.getUserById(comment.getUserId()).getLogin();
             userName.setText(userLogin);
         }
 

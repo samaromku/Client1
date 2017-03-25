@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/make_new_user"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/make_user"
+        />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/make_tasks"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/make_task"
+        />
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/correction_task"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/correction_task"
+        />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/make_address"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/make_address"
+        />
+
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/watch_address"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/watch_address"
+        />
+
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/correction_status"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/correction_status"
+        />
+
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/make_executor"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/make_executor"
+        />
+
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/correction_executor"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/correction_executor"
+        />
+
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/watch_tasks"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/watch_tasks"
+        />
+
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/comment_tasks"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/comment_tasks"
+        />
+
+
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/change_password"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/change_password"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/darkGreen"
+        android:textColor="@android:color/white"
+        android:text="@string/send"
+        android:id="@+id/send"/>
+</LinearLayout>
+    </ScrollView>

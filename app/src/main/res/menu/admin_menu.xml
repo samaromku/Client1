@@ -4,6 +4,7 @@
     <item android:id="@+id/action_logout"
         android:title="@string/logout"
         app:showAsAction="ifRoom"
+        android:icon="@drawable/quit"
         />
 
     <item android:id="@+id/users"
@@ -11,8 +12,13 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_name" />
 
-    <item android:id="@+id/refresh"
-        android:title="@string/refresh"
+    <!--<item android:id="@+id/refresh"-->
+        <!--android:title="@string/refresh"-->
+        <!--app:showAsAction="ifRoom"-->
+        <!--android:icon="@drawable/refresh" />-->
+
+    <item android:id="@+id/address"
+        android:title="@string/addresses"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/refresh" />
+        android:icon="@drawable/address" />
 </menu>

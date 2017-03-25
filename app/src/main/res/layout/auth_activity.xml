@@ -36,20 +36,10 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_in"/>
 
-    <!--<Button
-        android:background="@color/colorPrimary"
-        android:textColor="@android:color/white"
-        android:layout_margin="8dp"
-        android:id="@+id/register"
+    <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/register"/>
-
-
-    <com.google.android.gms.common.SignInButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/googleBtn"
-        />-->
+        android:text="@string/inside_ip"
+        android:id="@+id/inside_ip_checkbox"/>
 
 </LinearLayout>

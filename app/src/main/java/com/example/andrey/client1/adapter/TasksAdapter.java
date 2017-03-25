@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.storage.OnListItemClickListener;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.entities.Task;
@@ -35,13 +36,25 @@ import java.util.List;
             if(tasks.get(position).getStatus()!=null){
             switch (tasks.get(position).getStatus()) {
                 case Task.DISAGREE_TASK:
-                    holder.itemView.setBackgroundColor(Color.parseColor("#FFCDD2"));
+                    holder.itemView.setBackgroundColor(Color.RED);
+                    holder.title.setTextColor(Color.WHITE);
+                    holder.body.setTextColor(Color.WHITE);
+                    holder.address.setTextColor(Color.WHITE);
+                    holder.created.setTextColor(Color.WHITE);
+                    holder.firsLetter.setTextColor(Color.WHITE);
+                    holder.userLogin.setTextColor(Color.WHITE);
                     break;
                 case Task.DONE_TASK:
                     holder.itemView.setBackgroundColor(Color.LTGRAY);
                     break;
                 case Task.NEED_HELP:
-                    holder.itemView.setBackgroundColor(Color.parseColor("#F0F4C3"));
+                    holder.itemView.setBackgroundColor(Color. BLUE);
+                    holder.title.setTextColor(Color.WHITE);
+                    holder.body.setTextColor(Color.WHITE);
+                    holder.address.setTextColor(Color.WHITE);
+                    holder.created.setTextColor(Color.WHITE);
+                    holder.firsLetter.setTextColor(Color.WHITE);
+                    holder.userLogin.setTextColor(Color.WHITE);
                     break;
                 case Task.DOING_TASK:
                     holder.itemView.setBackgroundColor(Color.YELLOW);
@@ -73,10 +86,11 @@ import java.util.List;
             TextView address;
             TextView created;
             TextView firsLetter;
-
+            TextView userLogin;
 
             public ViewHolder(View itemView) {
                 super(itemView);
+                userLogin = (TextView) itemView.findViewById(R.id.user_login);
                 title = (TextView) itemView.findViewById(R.id.title);
                 address = (TextView) itemView.findViewById(R.id.address);
                 created = (TextView) itemView.findViewById(R.id.date);
@@ -90,6 +104,7 @@ import java.util.List;
                 address.setText(task.getAddress());
                 created.setText(task.getCreated());
                 body.setText(task.getBody());
+                userLogin.setText(UsersManager.INSTANCE.getUserById(task.getUserId()).getLogin());
                 //char[] str = task.getTitle().toCharArray();
                 firsLetter.setText(String.valueOf(getAdapterPosition()+1));
             }

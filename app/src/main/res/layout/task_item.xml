@@ -8,25 +8,40 @@
 
     <TextView
         android:layout_width="35dp"
-        android:layout_height="30dp"
+        android:layout_height="25dp"
         tools:text = "12"
         android:id="@+id/firstLetter"
-        android:textSize="27sp"
+        android:textSize="23sp"
         android:gravity="center"
         android:textStyle="bold"
         android:layout_marginRight="8dp"
         android:layout_marginTop="5dp"
         android:textColor="@color/darkGreen"/>
 
+
+    <TextView
+        android:gravity="end"
+        android:layout_below="@id/firstLetter"
+        android:id="@+id/user_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:minWidth="40dp"
+        tools:text = "Andre"
+        android:textColor="@color/darkGreen"/>
+
+
     <TextView
         android:layout_toRightOf="@id/firstLetter"
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17sp"
         android:textStyle="bold"
-        tools:text = "Поменять трубы на периметре с девятого по двадцать первый этаж и покрасить крышу"
+        tools:text = "Поменять трубы на периметре "
         android:textColor="@color/darkGreen"/>
+
+
 
     <TextView
         android:layout_width="match_parent"

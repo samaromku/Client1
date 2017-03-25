@@ -22,7 +22,9 @@
         android:id="@+id/fio"
         tools:text="Савченко Александр Владимирович"
         android:textSize="18sp"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
 
 
 </LinearLayout>

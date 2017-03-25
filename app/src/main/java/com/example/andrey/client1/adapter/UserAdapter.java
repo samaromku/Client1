@@ -15,6 +15,7 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private List<User> users;
     private OnListItemClickListener clickListener;
+    private int count = 1;
 
     public UserAdapter(List<User> users, OnListItemClickListener clickListener) {
         this.users = users;
@@ -50,8 +51,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
 
         public void bind(User user) {
-            //userId.setText(user.getId());
-            fio.setText(user.getFio());
+            userId.setText(String.valueOf(count));
+            fio.setText(user.getFIO());
+            count++;
         }
 
         @Override

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -71,6 +71,8 @@
         android:layout_height="wrap_content"
         tools:text="ЖСК 10"
         android:textSize="18sp"
+        android:maxLines="1"
+        android:ellipsize="marquee"
         android:textColor="@color/darkGreen"
         />
 
@@ -93,6 +95,8 @@
         android:layout_height="wrap_content"
         tools:text="Илюшина 40"
         android:textSize="18sp"
+        android:maxLines="1"
+        android:ellipsize="marquee"
         android:textColor="@color/darkGreen"/>
 
     <TextView
@@ -116,31 +120,12 @@
         android:textSize="18sp"
         android:autoLink="phone"
         android:clickable="true"
+        android:maxLines="1"
+        android:ellipsize="marquee"
         android:textColor="@android:color/holo_blue_bright"/>
 
     <TextView
-        android:layout_below="@+id/tel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/what_to_do"
-        android:id="@+id/what_to_do"
-        android:textStyle="bold"
-        android:layout_marginRight="8dp"
-        android:textSize="18sp"
-        android:textColor="@color/darkGreen"/>
-
-    <TextView
-        android:layout_below="@+id/tel"
-        android:layout_toRightOf="@+id/what_to_do"
-        android:id="@+id/task_body"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Снять вычисления с узла учета в теплоцентре, забрать отчеты за предыдущие месяцы"
-        android:textSize="18sp"
-        android:textColor="@color/darkGreen"/>
-
-    <TextView
-        android:layout_below="@+id/task_body"
+        android:layout_below="@+id/telefon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/time_spot"
@@ -152,7 +137,7 @@
 
     <TextView
         android:layout_toRightOf="@+id/time_spot"
-        android:layout_below="@id/task_body"
+        android:layout_below="@id/telefon"
         android:id="@+id/deadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -161,10 +146,56 @@
         android:textColor="@color/darkGreen"
         />
 
+    <TextView
+        android:layout_below="@+id/deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_name_task"
+        android:id="@+id/user_name"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_toRightOf="@+id/user_name"
+        android:layout_below="@id/deadline"
+        android:id="@+id/user_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="20 мар 2017 18:30"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"
+        />
+
+
+
+    <TextView
+        android:layout_below="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/what_to_do"
+        android:id="@+id/what_to_do"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+    <TextView
+        android:layout_below="@+id/user_name"
+        android:layout_toRightOf="@+id/what_to_do"
+        android:id="@+id/task_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Снять вычисления с узла учета в теплоцентре, забрать отчеты за предыдущие месяцы"
+        android:textSize="18sp"
+        android:textColor="@color/darkGreen"/>
+
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/deadline"
+        android:layout_below="@+id/task_body"
         android:id="@+id/hover_comment"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">

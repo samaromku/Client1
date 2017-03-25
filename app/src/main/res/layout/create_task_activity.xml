@@ -3,16 +3,23 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.TextInputLayout
+
+    <android.support.v7.widget.AppCompatSpinner
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-    <EditText
-        android:id="@+id/task_title"
+        android:layout_height="50dp"
+        android:id="@+id/spinner_importance"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        />
+
+
+    <android.support.v7.widget.AppCompatSpinner
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/org_name"/>
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="50dp"
+        android:id="@+id/spinner_status"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -29,11 +36,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp">
-        <EditText
-            android:id="@+id/done_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/done_time"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:id="@+id/choose_date"
+        android:hint="@string/enter_date_formate"
+        />
+    </android.support.design.widget.TextInputLayout>
+    <!---->
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/choose_date"-->
+        <!--android:id="@+id/choose_date"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--/>-->
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+    <AutoCompleteTextView
+        android:id="@+id/task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/org_name"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatSpinner
@@ -42,31 +72,15 @@
         android:id="@+id/spinner_users"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-
         />
 
-
-    <android.support.design.widget.TextInputLayout
+    <android.support.v7.widget.AppCompatSpinner
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-        <EditText
-            android:id="@+id/task_adress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/task_adress"/>
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-        <EditText
-            android:id="@+id/telephone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/telephone"/>
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="50dp"
+        android:id="@+id/spinner_type"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        />
 
     <Button
         android:layout_width="match_parent"

@@ -1,6 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/login_text"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/login_text"
+        tools:text="samaromku"
+        android:textSize="18sp"
+        android:id="@+id/login"/>
+
+    <TextView
+        android:layout_below="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fio"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/fio_text"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:layout_below="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/fio_text"
+        android:layout_toEndOf="@+id/fio_text"
+        tools:text="Леонтьев валерий игоревич"
+        android:textSize="18sp"
+        android:id="@+id/fio"/>
+
+
+    <TextView
+        android:layout_below="@+id/fio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/role"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/role_text"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:layout_below="@+id/fio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/role_text"
+        android:layout_toEndOf="@+id/role_text"
+        tools:text="администратор"
+        android:textSize="18sp"
+        android:id="@+id/role"
+        android:layout_marginRight="8dp"/>
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_toRightOf="@+id/role"
+        android:id="@+id/change"
+        android:layout_below="@id/fio"
+        android:src="@drawable/change_ic"
+        />
+
+    <TextView
+        android:layout_below="@+id/role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/phone"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/phone_text"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:layout_below="@+id/role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/phone_text"
+        android:layout_toEndOf="@+id/phone_text"
+        tools:text="89521325465"
+        android:textSize="18sp"
+        android:id="@+id/phone"
+        android:autoLink="phone"/>
+
+
+    <TextView
+        android:layout_below="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/email_text"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:layout_below="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/email_text"
+        android:layout_toEndOf="@+id/email_text"
+        tools:text="samaromku@mail.ru"
+        android:textSize="18sp"
+        android:id="@+id/email"
+        android:autoLink="email"/>
+
+
+
+</RelativeLayout>
