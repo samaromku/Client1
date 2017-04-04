@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.entities.Comment;
 import com.example.andrey.client1.managers.UsersManager;
-import com.example.andrey.client1.storage.DataWorker;
 import com.example.andrey.client1.storage.OnListItemClickListener;
 
 import java.util.List;

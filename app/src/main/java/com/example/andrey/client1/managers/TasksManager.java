@@ -3,27 +3,42 @@ package com.example.andrey.client1.managers;
 import com.example.andrey.client1.entities.Task;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TasksManager {
-    Task task;
-    List<Task> tasks;
+    private Task task;
+    private List<Task> tasks;
+    private Task removeTask;
     private String status;
-    private String[] statusStrings = new String[]{"стандартная", "аварийная", "информационная", "периодическая"};
+    private String[] importanceString = new String[]{Task.STANDART, Task.INFO, Task.AVARY, Task.TIME};
     private String[] type = new String[]{"к сведению", "приемка", "УУИТЭ", "ИТП", "АРТФ"};
-    private String[] statuses = new String[]{Task.NEW_TASK, Task.CONTROL_TASK, Task.DISAGREE_TASK, Task.DISTRIBUTED_TASK, Task.DOING_TASK, Task.DONE_TASK, Task.NEED_HELP};
+    private String[] statusesForCreate = new String[]{Task.NEW_TASK, Task.DISTRIBUTED_TASK};
+    private String[] AllStatuses = new String[]{Task.NEW_TASK, Task.DISTRIBUTED_TASK, Task.DOING_TASK, Task.CONTROL_TASK, Task.DONE_TASK, Task.NEED_HELP};
     public static final TasksManager INSTANCE = new TasksManager();
 
-    public String[] getStatuses() {
-        return statuses;
+    public Task getRemoveTask() {
+        return removeTask;
+    }
+
+    public void setRemoveTask(Task removeTask) {
+        this.removeTask = removeTask;
+    }
+
+    public String[] getAllStatuses() {
+        return AllStatuses;
+    }
+
+    public String[] getStatusesForCreate() {
+        return statusesForCreate;
     }
 
     public String[] getType() {
         return type;
     }
 
-    public String[] getStatusStrings() {
-        return statusStrings;
+    public String[] getImportanceString() {
+        return importanceString;
     }
 
     public String getStatus() {
@@ -58,6 +73,23 @@ public class TasksManager {
         }
         return null;
     }
+    public void removeDone(){
+        Iterator<Task> iterator = tasks.iterator();
+        while(iterator.hasNext()){
+            if(iterator.next().getStatus().equals(Task.DONE_TASK)){
+                iterator.remove();
+            }
+        }
+    }
+
+    public void removeTask(Task task){
+        Iterator<Task> iterator = tasks.iterator();
+        while(iterator.hasNext()){
+            if(iterator.next().equals(task)){
+                iterator.remove();
+            }
+        }
+    }
 
     public List<Task> getByUserId(int userId){
         List<Task>taskList = new ArrayList<>();
@@ -67,6 +99,16 @@ public class TasksManager {
             }
         }
         return taskList;
+    }
+
+    public void updateTask(Task task){
+        Iterator<Task> iterator = tasks.iterator();
+        while(iterator.hasNext()){
+            if(iterator.next().getId()==task.getId()){
+                iterator.remove();
+            }
+        }
+        tasks.add(task);
     }
 
     public void addUnique(List<Task>taskList){

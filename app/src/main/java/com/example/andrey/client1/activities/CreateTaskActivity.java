@@ -3,8 +3,12 @@ package com.example.andrey.client1.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,45 +17,48 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.andrey.client1.OnDataPass;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.entities.Address;
 import com.example.andrey.client1.entities.Task;
-import com.example.andrey.client1.entities.UserRole;
+import com.example.andrey.client1.fragments.DatePickerFragment;
 import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.managers.TasksManager;
-import com.example.andrey.client1.managers.UserRolesManager;
 import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
 import com.example.andrey.client1.storage.DateUtil;
 import com.example.andrey.client1.storage.JsonParser;
 
-public class CreateTaskActivity extends AppCompatActivity{
-    AppCompatSpinner importanceSpinner;
-    AppCompatSpinner statusSpinner;
-    EditText body;
-    EditText chooseDate;
-    AutoCompleteTextView orgName;
-    AppCompatSpinner userSpinner;
-    AppCompatSpinner typeSpinner;
-    Button createTask;
-    String userName;
-    DateUtil dateUtil = new DateUtil();
-    JsonParser parser = new JsonParser();
-    AddressManager addressManager = AddressManager.INSTANCE;
-    TasksManager tasksManager = TasksManager.INSTANCE;
-    UsersManager usersManager = UsersManager.INSTANCE;
-    String[] org_names;
-    String[] importance = tasksManager.getStatusStrings();
-    String[] userNames;
-    String[] statuses = tasksManager.getStatuses();
-    String[] types = tasksManager.getType();
-    String importanceSelected;
-    String typeSelected;
-    String statusSelected;
-    Address address;
-    boolean createTaskIsChecked = false;
-
+public class CreateTaskActivity extends AppCompatActivity implements OnDataPass {
+    private AppCompatSpinner importanceSpinner;
+    private AppCompatSpinner statusSpinner;
+    private EditText body;
+    private Button chooseDate;
+    private AutoCompleteTextView orgName;
+    private AppCompatSpinner userSpinner;
+    private AppCompatSpinner typeSpinner;
+    private Button createTask;
+    private String userName;
+    private DateUtil dateUtil = new DateUtil();
+    private JsonParser parser = new JsonParser();
+    private AddressManager addressManager = AddressManager.INSTANCE;
+    private TasksManager tasksManager = TasksManager.INSTANCE;
+    private UsersManager usersManager = UsersManager.INSTANCE;
+    private String[] org_names;
+    private String[] importanceString = tasksManager.getImportanceString();
+    private String[] userNames;
+    private String[] statusesString = tasksManager.getStatusesForCreate();
+    private String[] types = tasksManager.getType();
+    private String statusSelected;
+    private String typeSelected;
+    private String impornanceSelected;
+    private Address address = new Address();
+//    private boolean createTaskIsChecked = false;
+    private int taskId = 0;
+    private Client client = Client.INSTANCE;
+    private static final String DIALOG_DATE = "date_dialog";
+    private int newUserPosition = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,53 +66,82 @@ public class CreateTaskActivity extends AppCompatActivity{
         setContentView(R.layout.create_task_activity);
         getSupportActionBar().setTitle(R.string.create_task);
         init();
-        createDropMenuOrgNames();
         clickOnUserSpinner();
         clickOnImportance();
         clickOnType();
+//        checkRole();
         clickOnStatus();
-        checkRole();
 
+        createTask.setOnClickListener(v -> clickOnBtnCreateTask());
+        chooseDate.setOnClickListener(v -> chooseDate());
+    }
 
-        createTask.setOnClickListener(v -> {
-            if(createTaskIsChecked) {
-                if (orgName.getText().toString().equals("")) {
-                    orgName.setHint("Вы должны заполнить это поле");
-                } else if (body.getText().toString().equals("")) {
-                    body.setHint("Вы должны заполнить это поле");
-                } else if (chooseDate.getText().toString().equals("")) {
-                    chooseDate.setHint("Вы должны заполнить это поле");
-                } else {
-                    System.out.println(chooseDate);
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void chooseDate(){
+        FragmentManager manager = getSupportFragmentManager();
+        DatePickerFragment dialog = DatePickerFragment.newInstance(dateUtil.getDate());
+        dialog.show(manager, DIALOG_DATE);
+    }
+
+    private void clickOnBtnCreateTask(){
+//        if(createTaskIsChecked) {
+            if (orgName.getText().toString().equals("")) {
+                orgName.setHint("Вы должны заполнить это поле");
+            } else if (body.getText().toString().equals("")) {
+                body.setHint("Вы должны заполнить это поле");
+            } else if (chooseDate.getText().toString().equals("Выбрать дату")) {
+                chooseDate.setText("Вы должны заполнить это поле");
+            } else if (chooseDate.getText().toString().equals("Вы должны заполнить это поле")) {
+                chooseDate.setText("Вы должны заполнить это поле");
+            } else {
+                System.out.println(chooseDate);
+                if(taskId!=0){
+                    address.setId(tasksManager.getById(taskId).getAddressId());
+                    address.setAddress(tasksManager.getById(taskId).getAddress());
+                    address.setName(tasksManager.getById(taskId).getOrgName());
+                }else
                     address = addressManager.getAddressByName(orgName.getText().toString());
-                    Task task = new Task(
-                            tasksManager.getMaxId() + 1,
-                            dateUtil.currentDate(),
-                            importanceSelected,
-                            body.getText().toString(),
-                            statusSelected,
-                            typeSelected,
-                            chooseDate.getText().toString(),
-                            usersManager.getUserByUserName(userName).getId(),
-                            address.getId()
-                    );
-                    task.setAddress(address.getAddress());
-                    task.setOrgName(address.getName());
-                    tasksManager.setTask(task);
-                    Client.INSTANCE.sendMessage(parser.requestToServer(new Request(task, Request.ADD_TASK_TO_SERVER)));
-                    startActivity(new Intent(CreateTaskActivity.this, AccountActivity.class));
+                Task task = new Task(
+                        tasksManager.getMaxId() + 1,
+                        dateUtil.currentDate(),
+                        impornanceSelected,
+                        body.getText().toString(),
+                        statusSelected,
+                        typeSelected,
+                        chooseDate.getText().toString(),
+                        usersManager.getUserByUserName(userName).getId(),
+                        address.getId()
+                );
+                task.setAddress(address.getAddress());
+                task.setOrgName(address.getName());
+                tasksManager.setTask(task);
+                if(taskId!=0){
+                    System.out.println("taskId "+ taskId);
+                    task.setId(taskId);
+
+                    client.sendMessage(parser.requestToServer(new Request(task, Request.UPDATE_TASK)));
+                }else {
+                    client.sendMessage(parser.requestToServer(new Request(task, Request.ADD_TASK_TO_SERVER)));
+                }
+                if(address.getId()==0){
+                    Toast.makeText(this, "Список адресов пуст, получите его", Toast.LENGTH_SHORT).show();
+                }else {
+                    startActivity(new Intent(this, AccountActivity.class).putExtra("createTask", true));
                 }
             }
-            else {
-                Toast.makeText(this, "у вас нет прав", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(CreateTaskActivity.this, AccountActivity.class));
-            }
-        });
-
+//        }
+//        else {
+//            Toast.makeText(this, "у вас нет прав", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(this, AccountActivity.class));
+//        }
     }
 
     private void clickOnImportance(){
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, importance);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, importanceString);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         importanceSpinner.setAdapter(adapter);
         importanceSpinner.setSelection(0);
@@ -113,25 +149,25 @@ public class CreateTaskActivity extends AppCompatActivity{
         importanceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                importanceSelected = importance[position];
+                impornanceSelected = importanceString[position];
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                importanceSelected = importance[0];
+                impornanceSelected = importanceString[0];
             }
         });
     }
-
-    private void checkRole(){
-        UserRole userRole = UserRolesManager.INSTANCE.getUserRole();
-        if(userRole!=null && userRole.isMakeTasks()){
-            createTaskIsChecked=true;
-        }
-    }
+//
+//    private void checkRole(){
+//        UserRole userRole = UserRolesManager.INSTANCE.getUserRole();
+//        if(userRole!=null && userRole.isMakeTasks()){
+//            createTaskIsChecked=true;
+//        }
+//    }
 
     private void clickOnStatus(){
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, statuses);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, statusesString);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(adapter);
         statusSpinner.setSelection(0);
@@ -139,12 +175,20 @@ public class CreateTaskActivity extends AppCompatActivity{
         statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                statusSelected = statuses[position];
+                statusSelected = statusesString[position];
+                if(statusesString[position].equals(Task.NEW_TASK)) {
+                    for (int i = 0; i < userNames.length; i++) {
+                        if (userNames[i].equals("Не назначена")) {
+                            newUserPosition = i;
+                        }
+                    }
+                    userSpinner.setSelection(newUserPosition);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                statusSelected = statuses[0];
+                statusSelected = statusesString[0];
             }
         });
     }
@@ -178,6 +222,11 @@ public class CreateTaskActivity extends AppCompatActivity{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 userName = userNames[position];
+                if(position==newUserPosition){
+                    statusSpinner.setSelection(0);
+                }else{
+                    statusSpinner.setSelection(1);
+                }
             }
 
             @Override
@@ -187,15 +236,15 @@ public class CreateTaskActivity extends AppCompatActivity{
         });
     }
 
-    private void createDropMenuOrgNames(){
-        orgName.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, org_names));
-        if(org_names.length==0){
-            orgName.setHint("Получите адреса в нужной вкладке");
-        }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, AccountActivity.class));
     }
 
+
     private void init(){
-        chooseDate = (EditText) findViewById(R.id.choose_date);
+        chooseDate = (Button) findViewById(R.id.choose_date);
         orgName = (AutoCompleteTextView) findViewById(R.id.task_title);
         importanceSpinner = (AppCompatSpinner) findViewById(R.id.spinner_importance);
         statusSpinner = (AppCompatSpinner) findViewById(R.id.spinner_status);
@@ -203,9 +252,10 @@ public class CreateTaskActivity extends AppCompatActivity{
         body = (EditText) findViewById(R.id.task_body);
         userSpinner = (AppCompatSpinner) findViewById(R.id.spinner_users);
         createTask = (Button) findViewById(R.id.create_task_btn);
-        getImportance();
-        createOrgNames();
+        createImportance();
         createUserNames();
+        createOrgNames();
+        createDropMenuOrgNames();
     }
 
 
@@ -216,8 +266,8 @@ public class CreateTaskActivity extends AppCompatActivity{
         }
     }
 
-    private void getImportance(){
-        importanceSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, tasksManager.getStatusStrings()));
+    private void createImportance(){
+        importanceSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, tasksManager.getImportanceString()));
     }
 
     private void createOrgNames(){
@@ -225,5 +275,45 @@ public class CreateTaskActivity extends AppCompatActivity{
         for (int i = 0; i < addressManager.getAddresses().size(); i++) {
             org_names[i] = addressManager.getAddresses().get(i).getName();
         }
+    }
+
+
+    private void createDropMenuOrgNames(){
+        System.out.println(org_names.length);
+        orgName.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, org_names));
+        if(org_names.length==0){
+            orgName.setHint("Получите адреса в нужной вкладке");
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.create_task_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.address:
+                getAddressesFromServer();
+                startActivity(new Intent(this, AddressActivity.class));
+                return true;
+
+            default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void getAddressesFromServer(){
+        if(addressManager.getAddresses().size()>0){
+            addressManager.removeAll();
+        }
+        client.sendMessage(parser.requestToServer(new Request(Request.GIVE_ME_ADDRESSES_PLEASE)));
+    }
+
+    @Override
+    public void onDataPass(String data) {
+        Log.i("CreateActivity", "onDataPass: " + data);
     }
 }

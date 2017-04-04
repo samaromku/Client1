@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCE_Ts_dixz3hX49hVSpgFW5vHwLwofUoo"/>
+            android:value="AIzaSyA4SxV1Jtlr2DPorNDOWphVOkaEx43vi9s"/>
 
         <service android:name=".service.GpsService"/>
         <activity android:name=".activities.AuthActivity">
@@ -24,16 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MapActivity"/>
-        <activity android:name=".activities.MainActivity"/>
-        <activity android:name=".activities.AddressActivity"/>
-        <activity android:name=".activities.UserRoleActivity"/>
-        <activity android:name=".activities.AccountActivity" android:configChanges="orientation"/>
-        <activity android:name=".activities.CreateTaskActivity"/>
-        <activity android:name=".activities.UserActivity"/>
-        <activity android:name=".activities.CreateUserActivity"/>
-        <activity android:name=".activities.UsersActivity"/>
+        <activity android:name=".activities.MapActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AddressActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.UserRoleActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AccountActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.CreateTaskActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.UserActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.CreateUserActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.UsersActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activities.UpdateTaskActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activities.TaskActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
 
         </activity>

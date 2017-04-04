@@ -4,6 +4,7 @@ import com.example.andrey.client1.entities.Address;
 import com.example.andrey.client1.entities.Comment;
 import com.example.andrey.client1.entities.Task;
 import com.example.andrey.client1.entities.User;
+import com.example.andrey.client1.entities.UserCoords;
 import com.example.andrey.client1.entities.UserRole;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class Response {
     private List<User> userList;
     private List<Comment> comments;
     private List<Address> addresses;
+    private List<UserCoords>userCoordsList;
     private UserRole userRole;
     public static final String ADD_ACTION_ADMIN = "addActionAdmin";
     public static final String ADD_TASKS_TO_USER = "addTasksToUser";
@@ -27,6 +29,14 @@ public class Response {
     public static final String ADD_ADDRESSES_TO_USER = "add_addresses_to_user";
     public static final String SUCCESS_ADD_USER = "success_add_user";
     public static final String GET_AWAY_GUEST = "getAwayGuest";
+    public static final String SUCCESS_UPDATE_TASK = "success_update_task";
+    public static final String ADD_LATEST_USER_COORDS = "add_latest_user_coords";
+    public static final String SUCCESS_REMOVE_USER = "success_remove_user";
+    public static final String SUCCESS_REMOVE_TASK = "success_remove_task";
+
+    public List<UserCoords> getUserCoordsList() {
+        return userCoordsList;
+    }
 
     public List<Address> getAddresses() {
         return addresses;

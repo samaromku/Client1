@@ -51,8 +51,9 @@
     <string name="create">Создать</string>
     <string name="user_id">id юзера, можно только больше</string>
     <string name="choose_date">Выбрать дату</string>
-    <string name="enter_date_formate">введите дату в формате, дд.мм.гггг</string>
     <string name="inside_ip">Внутренняя сеть</string>
     <string name="user_name_task">Имя пользователя:</string>
     <string name="map">Карта</string>
+    <string name="change_task">Изменить задание</string>
+    <string name="remove">удалить</string>
 </resources>

@@ -9,17 +9,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
-import com.example.andrey.client1.storage.DataWorker;
 import com.example.andrey.client1.network.Request;
 import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.storage.JsonParser;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.storage.SHAHashing;
-
-import java.security.NoSuchAlgorithmException;
 
 public class AuthActivity extends AppCompatActivity {
     Button signIn;
@@ -28,7 +25,8 @@ public class AuthActivity extends AppCompatActivity {
     JsonParser parser = new JsonParser();
     SHAHashing hashing = new SHAHashing();
     private CheckBox isInside;
-    private DataWorker dataWorker = new DataWorker();
+    private Client client = Client.INSTANCE;
+    UsersManager usersManager = UsersManager.INSTANCE;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,18 +42,21 @@ public class AuthActivity extends AppCompatActivity {
         isInside.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Client.INSTANCE.setHomeIp(isChecked);
+                client.setHomeIp(isChecked);
             }
         });
 
         signIn.setOnClickListener(v -> {
-            Client.INSTANCE.start();
-            Client.INSTANCE.setHomeIp(isInside.isChecked());
-            if(!Client.INSTANCE.isConnected()){
-                Client.INSTANCE.setConnected(true);
+
+
+            client.start();
+            client.setHomeIp(isInside.isChecked());
+            if(!client.isConnected()){
+                client.setConnected(true);
             }
-            dataWorker.setUserName(writeName.getText().toString());
-//            DataWorker.INSTANCE.setUserName(writeName.getText().toString());
+            User user = new User();
+            user.setLogin(writeName.getText().toString());
+            usersManager.setUser(user);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -64,7 +65,8 @@ public class AuthActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Client.INSTANCE.sendMessage(parser.requestToServer(new Request(new User(writeName.getText().toString(), hashing.hashPwd(writePwd.getText().toString())), "auth")));
+
+                    client.sendMessage(parser.requestToServer(new Request(new User(writeName.getText().toString(), hashing.hashPwd(writePwd.getText().toString())), "auth")));
                 }
             }).start();
             writeName.setInputType(InputType.TYPE_NULL);

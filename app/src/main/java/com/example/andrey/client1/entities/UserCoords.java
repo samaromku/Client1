@@ -5,11 +5,20 @@ import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.storage.DateUtil;
 
 public class UserCoords {
+    private int id;
     private int userId;
     private double lat;
     private double log;
     private String ts;
     private String address;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTs() {
         return ts;

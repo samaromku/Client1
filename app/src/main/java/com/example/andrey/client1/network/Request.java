@@ -20,6 +20,11 @@ public class Request {
     public static final String ADD_NEW_USER = "add_new_user";
     public static final String ADD_NEW_ROLE = "add_new_role";
     public static final String ADD_COORDS = "add_coords";
+    public static final String UPDATE_TASK = "update_task";
+    public static final String GIVE_ME_LAST_USERS_COORDS = "give_me_last_users_coords";
+    public static final String REMOVE_TASK = "remove_task";
+    public static final String REMOVE_USER = "remove_user";
+
 
     public Request(Task task, String request){
         this.task = task;

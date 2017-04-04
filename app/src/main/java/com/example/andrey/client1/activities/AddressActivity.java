@@ -1,5 +1,6 @@
 package com.example.andrey.client1.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,12 @@ public class AddressActivity extends AppCompatActivity {
         addressesList.setAdapter(adapter);
         UpdateData test = new UpdateData(this, adapter);
         test.execute();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, CreateTaskActivity.class));
     }
 
     private void init(){

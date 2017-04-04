@@ -14,15 +14,12 @@ import android.widget.EditText;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.entities.UserRole;
-import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
-import com.example.andrey.client1.storage.DataWorker;
 import com.example.andrey.client1.storage.JsonParser;
 import com.example.andrey.client1.storage.SHAHashing;
 
 public class CreateUserActivity extends AppCompatActivity {
-    EditText userIdEditText;
     EditText login;
     EditText password;
     EditText fio;
@@ -36,6 +33,7 @@ public class CreateUserActivity extends AppCompatActivity {
     JsonParser parser = new JsonParser();
     boolean isChecked = false;
     SHAHashing hashing = new SHAHashing();
+    private Client client = Client.INSTANCE;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,9 +72,7 @@ public class CreateUserActivity extends AppCompatActivity {
         checkFieldsFull();
 
         if(isChecked) {
-            int id = Integer.parseInt(userIdEditText.getText().toString());
             user = new User(
-                    id,
                     login.getText().toString(),
                     hashing.hashPwd(password.getText().toString()),
                     fio.getText().toString(),
@@ -84,14 +80,13 @@ public class CreateUserActivity extends AppCompatActivity {
                     phone.getText().toString(),
                     email.getText().toString()
             );
-            Client.INSTANCE.sendMessage(parser.requestToServer(new Request(user, Request.ADD_NEW_USER)));
+            client.sendMessage(parser.requestToServer(new Request(user, Request.ADD_NEW_USER)));
             login.setText("");
             password.setText("");
             phone.setText("");
             email.setText("");
             fio.setText("");
-            UsersManager.INSTANCE.setUser(user);
-            startActivity(new Intent(CreateUserActivity.this, UserRoleActivity.class).putExtra("newUser", true).putExtra("userId", id));
+            startActivity(new Intent(CreateUserActivity.this, UsersActivity.class).putExtra("newUser", true));
         }
     }
 
@@ -126,7 +121,6 @@ public class CreateUserActivity extends AppCompatActivity {
     }
 
     private void init(){
-        userIdEditText = (EditText) findViewById(R.id.user_id);
         login = (EditText) findViewById(R.id.login);
         password = (EditText) findViewById(R.id.password);
         phone = (EditText) findViewById(R.id.phone);
@@ -135,6 +129,5 @@ public class CreateUserActivity extends AppCompatActivity {
         create = (Button) findViewById(R.id.create);
         role = (AppCompatSpinner) findViewById(R.id.spinner_roles);
         roles  = new String[]{UserRole.USER_ROLE, UserRole.MANAGER_ROLE, UserRole.ADMIN_ROLE};
-        userIdEditText.setText(String.valueOf(UsersManager.INSTANCE.maxId()+1));
     }
 }

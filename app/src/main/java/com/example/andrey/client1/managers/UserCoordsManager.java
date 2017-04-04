@@ -42,5 +42,7 @@ public class UserCoordsManager {
         userCoordsList.add(userCoords);
     }
 
-
+    public void addAll(List<UserCoords>userCoordses){
+        userCoordsList.addAll(userCoordses);
+    }
 }

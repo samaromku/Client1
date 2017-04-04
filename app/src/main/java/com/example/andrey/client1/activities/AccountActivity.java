@@ -1,6 +1,9 @@
 package com.example.andrey.client1.activities;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -8,19 +11,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.andrey.client1.storage.UpdateData;
+import com.example.andrey.client1.storage.ThreadWorker;
 import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.managers.CommentsManager;
 import com.example.andrey.client1.managers.TasksManager;
 import com.example.andrey.client1.managers.UserRolesManager;
 import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
-import com.example.andrey.client1.service.GpsService;
 import com.example.andrey.client1.network.Request;
 import com.example.andrey.client1.entities.UserRole;
 import com.example.andrey.client1.storage.JsonParser;
@@ -39,10 +42,10 @@ public class AccountActivity extends AppCompatActivity {
     private UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
     private AddressManager addressManager = AddressManager.INSTANCE;
     private static final String TAG = "AccountActivity";
-
+    private Client client = Client.INSTANCE;
 
     private OnListItemClickListener clickListener = (v, position) -> {
-        Client.INSTANCE.sendMessage(parser.requestToServer(new Request(tasksManager.getTasks().get(position), Request.WANT_SOME_COMMENTS)));
+        client.sendMessage(parser.requestToServer(new Request(tasksManager.getTasks().get(position), Request.WANT_SOME_COMMENTS)));
         startActivity(new Intent(AccountActivity.this, TaskActivity.class).putExtra("taskNumber", position));
     };
 
@@ -51,25 +54,33 @@ public class AccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_activity);
         getSupportActionBar().setTitle("Аккаунт");
+//        startService(GpsService.newIntent(this));
+//        GpsService.setServiceAlarm(this, true);
         tasksList = (RecyclerView) findViewById(R.id.tasks_list);
-        buttonAddTask();
+        addTask = (FloatingActionButton) findViewById(R.id.add_task_btn);
+        addTask.setVisibility(View.INVISIBLE);
+
         addTask.setOnClickListener(v -> startActivity(new Intent(AccountActivity.this, CreateTaskActivity.class)));
         tasksList.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TasksAdapter(tasksManager.getTasks(), clickListener);
         tasksList.setAdapter(adapter);
-        Intent intent = getIntent();
-        boolean auth = intent.getBooleanExtra("fromAuth", false);
-        if(auth) {
-            UpdateData test = new UpdateData(this, adapter);
-            test.execute();
-            checkAuth();
-        }
-//                startServiceGps();
+        outsideIntents();
     }
 
-    private void startServiceGps(){
-                Intent i = GpsService.newIntent(AccountActivity.this);
-                startService(i);
+    private void outsideIntents(){
+        Intent intent = getIntent();
+        boolean auth = intent.getBooleanExtra("fromAuth", false);
+        boolean createTask = intent.getBooleanExtra("createTask", false);
+        boolean changeStatus = intent.getBooleanExtra("statusChanged", false);
+        boolean removeTask = intent.getBooleanExtra("removeTask", false);
+        if(auth) {
+            checkAuth();
+            UpdateDataAccountActivity test = new UpdateDataAccountActivity(this, adapter);
+            test.execute();
+        } else if(createTask || changeStatus || removeTask){
+            UpdateDataAccountActivity test = new UpdateDataAccountActivity(this, adapter);
+            test.execute();
+        }
     }
 
     @Override
@@ -83,7 +94,6 @@ public class AccountActivity extends AppCompatActivity {
 
     private void buttonAddTask(){
         //кнопка добавить задание
-        addTask = (FloatingActionButton) findViewById(R.id.add_task_btn);
         UserRole userRole = userRolesManager.getUserRole();
         if(userRole!=null){
             if(userRole.isMakeTasks())
@@ -93,22 +103,71 @@ public class AccountActivity extends AppCompatActivity {
     }
 
 
-    private void checkAuth(){
+    private class UpdateDataAccountActivity extends AsyncTask<Void, Void, Void> {
+        private Context context;
+        private RecyclerView.Adapter adapter;
+        private ProgressDialog dialog;
+        private Client client = Client.INSTANCE;
+        private static final String TAG = "updateDate";
+
+         UpdateDataAccountActivity(Context context, RecyclerView.Adapter adapter){
+            this.context = context;
+            this.adapter = adapter;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(context);
+            dialog.setTitle("Загружаются данные");
+            dialog.setCancelable(true);
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            while(true){
+                if (client.getThread() != null) {
+                    try {
+                        client.getThread().join();
+                        Log.i(TAG, "doInBackground: thread joined");
+                        Thread.sleep(1000);
+                        break;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            adapter.notifyDataSetChanged();
+            buttonAddTask();
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
+        }
+    }
+
+
+    public void checkAuth(){
         Handler handler = new Handler();
         new Thread(() -> {
             while(true){
-                if (Client.INSTANCE.getThread() != null) {
+                if (client.getThread() != null) {
                     try {
-                        Client.INSTANCE.getThread().join();
+                        client.getThread().join();
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if (!Client.INSTANCE.isAuth()) {
+                    if (!client.isAuth()) {
                         handler.post(() -> {
                             Toast.makeText(AccountActivity.this, "вы не зарегистрированы в системе", Toast.LENGTH_SHORT).show();
                             try {
-                                Client.INSTANCE.stop();
+//                                stopService(new Intent(GpsService.newIntent(this)));
+                                client.stop();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -137,9 +196,11 @@ public class AccountActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 try {
-                    Client.INSTANCE.setAuth(false);
-                    Client.INSTANCE.stop();
+                    client.setAuth(false);
+                    client.stop();
                     allClear();
+//                    stopService(new Intent(GpsService.newIntent(this)));
+                    System.out.println("стопарим сервис");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -150,23 +211,11 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(new Intent(AccountActivity.this, UsersActivity.class));
             return true;
 
-            case R.id.address:
-                getAddressesFromServer();
-
-                startActivity(new Intent(AccountActivity.this, AddressActivity.class));
-                return true;
-
             default:
             return super.onOptionsItemSelected(item);
         }
     }
 
-    private void getAddressesFromServer(){
-        if(addressManager.getAddresses().size()>0){
-            addressManager.removeAll();
-        }
-        Client.INSTANCE.sendMessage(parser.requestToServer(new Request(Request.GIVE_ME_ADDRESSES_PLEASE)));
-    }
 
     private void allClear(){
         tasksManager.removeAll();

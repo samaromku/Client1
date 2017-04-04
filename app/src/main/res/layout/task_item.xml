@@ -19,19 +19,10 @@
         android:textColor="@color/darkGreen"/>
 
 
-    <TextView
-        android:gravity="end"
-        android:layout_below="@id/firstLetter"
-        android:id="@+id/user_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:minWidth="40dp"
-        tools:text = "Andre"
-        android:textColor="@color/darkGreen"/>
 
 
     <TextView
+        android:layout_toEndOf="@+id/firstLetter"
         android:layout_toRightOf="@id/firstLetter"
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -41,6 +32,17 @@
         tools:text = "Поменять трубы на периметре "
         android:textColor="@color/darkGreen"/>
 
+    <TextView
+        android:gravity="end"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/user_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:minWidth="40dp"
+        tools:text = "Andre"
+        android:textColor="@color/darkGreen"/>
 
 
     <TextView

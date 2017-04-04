@@ -6,6 +6,7 @@ import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.managers.CommentsManager;
 import com.example.andrey.client1.managers.TasksManager;
+import com.example.andrey.client1.managers.UserCoordsManager;
 import com.example.andrey.client1.managers.UserRolesManager;
 import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
@@ -13,77 +14,56 @@ import com.example.andrey.client1.network.Response;
 
 public class DataWorker extends Thread{
     private JsonParser parser = new JsonParser();
-    private int userId;
-    private String userName;
     private boolean isUserRoleChanged = false;
     private UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
     private TasksManager tasksManager = TasksManager.INSTANCE;
     private CommentsManager commentsManager = CommentsManager.INSTANCE;
     private UsersManager usersManager = UsersManager.INSTANCE;
     private AddressManager addressManager = AddressManager.INSTANCE;
+    private UserCoordsManager userCoordsManager = UserCoordsManager.INSTANCE;
     private boolean isStopped = false;
     private String response;
+    private Client client = Client.INSTANCE;
+    public static final String TAG = "Dataworker";
 
     public DataWorker(String response){
         this.response = response;
-    }
-
-    public DataWorker(){}
-
-    public boolean isUserRoleChanged() {
-        return isUserRoleChanged;
     }
 
     public void setUserRoleChanged(boolean userRoleChanged) {
         isUserRoleChanged = userRoleChanged;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     @Override
-    public void run() {
+    public synchronized void run() {
         Response responseFromServer = parser.parseFromServerUserTasks(response);
         if (response != null && responseFromServer.getResponse() != null) {
             switch (responseFromServer.getResponse()) {
 
                 case Response.ADD_TASKS_TO_USER:
-                    Client.INSTANCE.setAuth(true);
+                    client.setAuth(true);
                     tasksManager.addUnique(responseFromServer.getTaskList());
+                    tasksManager.removeDone();
                     usersManager.setUser(responseFromServer.getUser());
                     usersManager.addAll(responseFromServer.getUserList());
                     userRolesManager.addUserRole(responseFromServer.getUser().getUserRole());
                     userRolesManager.setUserRole(userRolesManager.getRoleByUserId(responseFromServer.getUser().getId()));
-                    setUserId(responseFromServer.getUser().getId());
                     return;
 
                 case Response.ADD_ACTION_ADMIN:
-                    Client.INSTANCE.setAuth(true);
+                    client.setAuth(true);
                     Log.i("data", "добавляем админа");
                     tasksManager.addUnique(responseFromServer.getTaskList());
                     usersManager.addAll(responseFromServer.getUserList());
                     for (User u : usersManager.getUsers()) {
                         userRolesManager.addUserRole(u.getUserRole());
-                        if (u.getLogin().equals(getUserName())) {
-                            setUserId(u.getId());
+                        if (u.getLogin().equals(usersManager.getUser().getLogin())) {
                             usersManager.setUser(u);
                         }
                     }
-                    userRolesManager.setUserRole(userRolesManager.getRoleByUserId(userId));
-                    isStopped = true;
+
+                    User user = usersManager.getUser();
+                    userRolesManager.setUserRole(userRolesManager.getRoleByUserId(user.getId()));
                     return;
 
                 case Response.ADD_COMMENTS:
@@ -95,12 +75,28 @@ public class DataWorker extends Thread{
                     setUserRoleChanged(true);
                     return;
 
+                case Response.ADD_LATEST_USER_COORDS:
+                    userCoordsManager.addAll(responseFromServer.getUserCoordsList());
+                    return;
+
                 case Response.INSERT_USER_ROLE_SUCCESS:
                     userRolesManager.addUserRole(userRolesManager.getCreateNewUserRole());
                     return;
 
+                case Response.SUCCESS_REMOVE_TASK:
+                    tasksManager.removeTask(tasksManager.getRemoveTask());
+                    return;
+
+                case Response.SUCCESS_REMOVE_USER:
+                    usersManager.removeUser(usersManager.getRemoveUser());
+
                 case Response.ADD_TASK_SUCCESS:
                     tasksManager.addTask(tasksManager.getTask());
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     return;
 
                 case Response.ADD_ADDRESSES_TO_USER:
@@ -112,12 +108,23 @@ public class DataWorker extends Thread{
                     tasksManager.updateTask(tasksManager.getStatus(), tasksManager.getTask().getId());
                     return;
 
+                case Response.SUCCESS_UPDATE_TASK:
+                    tasksManager.updateTask(tasksManager.getTask());
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+
                 case Response.SUCCESS_ADD_USER:
-                    usersManager.addUser(usersManager.getUser());
+                    User newUser = responseFromServer.getUser();
+                    usersManager.addUser(newUser);
+                    userRolesManager.addUserRole(newUser.getUserRole());
                     return;
 
                 case Response.GET_AWAY_GUEST:
-                    Client.INSTANCE.setAuth(false);
+                    client.setAuth(false);
                     return;
 
                 default:

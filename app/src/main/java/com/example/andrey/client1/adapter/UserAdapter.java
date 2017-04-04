@@ -15,7 +15,6 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private List<User> users;
     private OnListItemClickListener clickListener;
-    private int count = 1;
 
     public UserAdapter(List<User> users, OnListItemClickListener clickListener) {
         this.users = users;
@@ -33,6 +32,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.bind(users.get(position));
     }
 
+
+
     @Override
     public int getItemCount() {
         return users.size();
@@ -45,15 +46,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            userId = (TextView) itemView.findViewById(R.id.users_id);
+//            userId = (TextView) itemView.findViewById(R.id.users_id);
             fio = (TextView) itemView.findViewById(R.id.fio);
             itemView.setOnClickListener(this);
         }
 
         public void bind(User user) {
-            userId.setText(String.valueOf(count));
+//            char[]letters = user.getRole().toCharArray();
+//            userId.setText(String.valueOf(letters[0]).toUpperCase());
             fio.setText(user.getFIO());
-            count++;
         }
 
         @Override

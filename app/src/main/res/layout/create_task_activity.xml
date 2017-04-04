@@ -32,28 +32,14 @@
             android:hint="@string/task_body"/>
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="date"
         android:id="@+id/choose_date"
-        android:hint="@string/enter_date_formate"
+        android:text="@string/choose_date"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
         />
-    </android.support.design.widget.TextInputLayout>
-    <!---->
-    <!--<Button-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/choose_date"-->
-        <!--android:id="@+id/choose_date"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:textColor="@android:color/white"-->
-        <!--/>-->
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -86,8 +72,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="@string/create_task"
         android:textColor="@android:color/white"
+        android:text="@string/create_task"
         android:id="@+id/create_task_btn"/>
 
 </LinearLayout>

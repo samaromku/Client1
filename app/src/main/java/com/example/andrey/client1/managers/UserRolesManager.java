@@ -3,13 +3,14 @@ package com.example.andrey.client1.managers;
 import com.example.andrey.client1.entities.UserRole;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class UserRolesManager {
-    UserRole userRole;
-    UserRole createNewUserRole;
-    UserRole updateUserRole;
-    List<UserRole> userRoles;
+    private UserRole userRole;
+    private UserRole createNewUserRole;
+    private UserRole updateUserRole;
+    private List<UserRole> userRoles;
     public static final UserRolesManager INSTANCE = new UserRolesManager();
 
     public UserRole getUpdateUserRole() {
@@ -41,9 +42,10 @@ public class UserRolesManager {
     }
 
     public void updateUserRole(UserRole userRole){
-        for(UserRole u : userRoles){
-            if(u.getId()==userRole.getId()){
-                userRoles.remove(userRoles.indexOf(u));
+        Iterator<UserRole> iterator = userRoles.iterator();
+        while(iterator.hasNext()){
+            if(iterator.next().getId()==userRole.getId()){
+                iterator.remove();
             }
         }
         userRoles.add(userRole);

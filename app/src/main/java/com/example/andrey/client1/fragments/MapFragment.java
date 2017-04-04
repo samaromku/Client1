@@ -1,5 +1,7 @@
-package com.example.andrey.client1.activities;
+package com.example.andrey.client1.fragments;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.entities.UserCoords;
 import com.example.andrey.client1.managers.UserCoordsManager;
 import com.example.andrey.client1.managers.UsersManager;
 import com.google.android.gms.maps.CameraUpdate;
@@ -20,10 +23,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class MapFragment extends SupportMapFragment {
     private GoogleMap map;
     private UserCoordsManager userCoordsManager = UserCoordsManager.INSTANCE;
     private Location currentLocation = userCoordsManager.getLocation();
+    private List<UserCoords>userCoordsList = userCoordsManager.getUserCoordsList();
+    UsersManager usersManager = UsersManager.INSTANCE;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -42,18 +51,22 @@ public class MapFragment extends SupportMapFragment {
         if(map==null){
             return;
         }
-
-        LatLng myPoint = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-        MarkerOptions myMarker = new MarkerOptions().position(myPoint).title(UsersManager.INSTANCE.getUser().getLogin());
         map.clear();
+        for (int i = 0; i < userCoordsList.size(); i++) {
+            UserCoords userCoords = userCoordsList.get(i);
+            LatLng point = new LatLng(userCoords.getLat(), userCoords.getLog());
+            MarkerOptions mark = new MarkerOptions().position(point).title(usersManager.getUserById(userCoords.getUserId()).getLogin());
+            map.addMarker(mark);
+        }
+        LatLng myPoint = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        MarkerOptions myMarker = new MarkerOptions().position(myPoint).title(usersManager.getUser().getLogin());
         map.addMarker(myMarker);
 
         LatLngBounds bounds = new LatLngBounds.Builder()
                 .include(myPoint)
                 .build();
 
-        int margin = 100;
+        int margin = 300;
         CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, margin);
         map.animateCamera(update);
     }

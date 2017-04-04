@@ -86,8 +86,7 @@ public class User {
         return login;
     }
 
-    public User(int id, String login, String password, String FIO, String role, String telephone, String email) {
-        this.id = id;
+    public User(String login, String password, String FIO, String role, String telephone, String email) {
         this.login = login;
         this.password = password;
         this.FIO = FIO;

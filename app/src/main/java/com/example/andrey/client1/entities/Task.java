@@ -1,6 +1,6 @@
 package com.example.andrey.client1.entities;
 
-public class Task {
+public class Task{
     private int id;
     private String created;
     private String importance;
@@ -21,6 +21,10 @@ public class Task {
     public static final String CONTROL_TASK = "контроль";
     public static final String NEED_HELP = "нужна помощь";
 
+    public static final String STANDART = "Стандартная";
+    public static final String AVARY = "Аварийная";
+    public static final String TIME = "Периодическая";
+    public static final String INFO = "Информационная";
 
     public int getAddressId() {
         return addressId;
@@ -121,6 +125,8 @@ public class Task {
         this.userId = userId;
         this.addressId = addressId;
     }
+
+
 
     public Task(){}
 }

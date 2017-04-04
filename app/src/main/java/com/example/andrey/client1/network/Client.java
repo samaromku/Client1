@@ -3,6 +3,7 @@ package com.example.andrey.client1.network;
 import android.util.Log;
 
 import com.example.andrey.client1.storage.DataWorker;
+import com.example.andrey.client1.storage.ThreadWorker;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,11 +19,11 @@ import java.net.UnknownHostException;
 public class Client {
     public static final Client INSTANCE = new Client();
     //    private static final String hostNameHome = "10.42.112.233";  // ноут алины
-    private static final String hostNameHome = "192.168.137.1";  // ноут алины
-//    private static final String hostNameHome = "192.168.0.98";  // внутренний тепломер
+//    private static final String hostNameHome = "192.168.137.1";  // ноут алины
+    private static final String hostNameHome = "192.168.0.98";  // внутренний тепломер
     private static final String hostNameOutside = "81.23.123.230";  // тепломер
+    private String hostName = "";
     private static final int portNumber = 60123;
-    private static final String debugString = "debug";
     private static final String TAG = "Client";
     private Socket socket = null;
     private BufferedReader reader;
@@ -35,6 +36,14 @@ public class Client {
     private volatile boolean isMessageReceived = false;
     private boolean auth = false;
     private volatile DataWorker thread;
+
+    private String getHostName() {
+        return hostName;
+    }
+
+    private void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
 
     public DataWorker getThread() {
         return thread;
@@ -76,13 +85,13 @@ public class Client {
             }
         }
 
-    private void tryConnectSocket(){
+    private void changeHostName(){
         if(isHomeIp){
             System.out.println(hostNameHome);
-            connect(hostNameHome);
+            setHostName(hostNameHome);
         }else {
             System.out.println(hostNameOutside);
-            connect(hostNameOutside);
+            setHostName(hostNameOutside);
         }
     }
 
@@ -98,28 +107,14 @@ public class Client {
         new Thread() {
             public void run() {
                 try {
-                    tryConnectSocket();
-                    Log.i(debugString, "try connect server");
-                    socket.connect(sockAdd);
+                    changeHostName();
+                    Log.i(TAG, "try connect server");
+                    socket = new Socket(getHostName(), portNumber);
                     reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    while(isConnected) {
                         while ((data = reader.readLine()) != null) {
                             if(!socket.isClosed()) {
-//                                isMessageRecieved();
-                                if(!data.equals("")) {
-                                    System.out.println("Запускаем поток dataworker");
-                                    thread = new DataWorker(data);
-                                    System.out.println(data);
-                                    thread.start();
-                                    try {
-                                        thread.join();
-                                        thread = null;
-                                        System.out.println("дождались и приравняли наллу");
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-//                                DataWorker.INSTANCE.workingWithData(data);
+                                workWithData();
+//                            threadWorker.workThread(data);
                             }
                             else {
                                 while (socket.isClosed()) {
@@ -128,18 +123,28 @@ public class Client {
                                 }
                             }
                         }
-                    }
                 } catch (IOException e) {
                     System.out.println("не подключается 1");
-                    Log.e(debugString, e.getMessage());
+                    Log.e(TAG, e.getMessage());
                 }
             }
         }.start();
     }
 
-    private void isMessageRecieved(){
-        Log.i("Client", "message riceived" + data);
-        setMessageReceived(true);
+    private void workWithData(){
+        thread = new DataWorker(data);
+        System.out.println(data);
+        Log.i(TAG, "run: thread start");
+        thread.start();
+        try {
+            thread.join();
+            Thread.sleep(500);
+            Thread.yield();
+            thread = null;
+            Log.i(TAG, "run: thread joined and nulled");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop() throws IOException {
@@ -173,7 +178,7 @@ public class Client {
                 {
                     System.out.println("не удалось подключиться 4");
                     System.out.println(socket.isConnected());
-                    Log.e(debugString, e.getMessage());
+                    Log.e(TAG, e.getMessage());
                 }
             }).start();
     }

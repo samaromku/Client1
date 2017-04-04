@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,16 +20,15 @@ import com.example.andrey.client1.R;
 import com.example.andrey.client1.adapter.CommentsAdapter;
 import com.example.andrey.client1.managers.CommentsManager;
 import com.example.andrey.client1.managers.TasksManager;
+import com.example.andrey.client1.managers.UserRolesManager;
 import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.entities.Comment;
-import com.example.andrey.client1.storage.DataWorker;
 import com.example.andrey.client1.network.Request;
 import com.example.andrey.client1.entities.Task;
 import com.example.andrey.client1.storage.DateUtil;
 import com.example.andrey.client1.storage.JsonParser;
 import com.example.andrey.client1.storage.OnListItemClickListener;
-import com.example.andrey.client1.storage.UpdateData;
 
 public class TaskActivity extends AppCompatActivity{
     private TextView typeTask;
@@ -48,9 +49,11 @@ public class TaskActivity extends AppCompatActivity{
     TasksManager tasksManager = TasksManager.INSTANCE;
     CommentsManager commentsManager = CommentsManager.INSTANCE;
     UsersManager usersManager = UsersManager.INSTANCE;
+    UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
     Task task;
     Comment newComment;
-    DataWorker dataWorker = new DataWorker();
+    private Client client = Client.INSTANCE;
+    private JsonParser parser = new JsonParser();
 
     private OnListItemClickListener clickListener = (v, position) -> {};
 
@@ -68,10 +71,33 @@ public class TaskActivity extends AppCompatActivity{
         btnClicks();
         UpdateData data = new UpdateData();
         data.execute();
-//        update();
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(userRolesManager.getUserRole().isCorrectionTask()) {
+            getMenuInflater().inflate(R.menu.change_task_menu, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.change_task:
+            startActivity(new Intent(this, UpdateTaskActivity.class).putExtra("taskId", task.getId()));
+                commentsManager.removeAll();
+                return true;
+            case R.id.remove_task:
+                client.sendMessage(parser.requestToServer(new Request(task, Request.REMOVE_TASK)));
+                startActivity(new Intent(this, AccountActivity.class).putExtra("removeTask", true));
+                commentsManager.removeAll();
+                return true;
+            default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -87,17 +113,17 @@ public class TaskActivity extends AppCompatActivity{
         protected void onPreExecute() {
             dialog = new ProgressDialog(TaskActivity.this);
             dialog.setTitle("Загружаются данные");
-            dialog.setCancelable(false);
+            dialog.setCancelable(true);
             dialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             while (true) {
-                if (Client.INSTANCE.getThread() != null) {
-                    if (!Client.INSTANCE.getThread().isInterrupted()) {
+                if (client.getThread() != null) {
+                    if (!client.getThread().isInterrupted()) {
                         try {
-                            Client.INSTANCE.getThread().join();
+                            client.getThread().join();
                             Thread.sleep(500);
                             break;
                         } catch (InterruptedException e) {
@@ -121,7 +147,7 @@ public class TaskActivity extends AppCompatActivity{
 
 
     private void btnClicks(){
-        doneBtn.setOnClickListener(v -> clickOnButton(Task.DONE_TASK));
+        doneBtn.setOnClickListener(v -> clickOnButton(Task.CONTROL_TASK));
         needHelp.setOnClickListener(v -> clickOnButton(Task.NEED_HELP));
         disAgree.setOnClickListener(v -> clickOnButton(Task.DISAGREE_TASK));
     }
@@ -135,13 +161,14 @@ public class TaskActivity extends AppCompatActivity{
             newComment = new Comment(
                     new DateUtil().currentDate(),
                     comment.getText().toString(),
-                    dataWorker.getUserId(),
+                    usersManager.getUser().getId(),
                     tasksManager.getTasks().get(taskNumber).getId());
             //добавить в бдб отправить на сервер
             tasksManager.setStatus(actionTask);
             commentsManager.setComment(newComment);
-            Client.INSTANCE.sendMessage(new JsonParser().requestToServer(new Request(newComment, actionTask)));
-            startActivity(new Intent(TaskActivity.this, AccountActivity.class));
+            client.sendMessage(new JsonParser().requestToServer(new Request(newComment, actionTask)));
+            startActivity(new Intent(this, AccountActivity.class).putExtra("statusChanged", true));
+            commentsManager.removeAll();
         }
     }
 
@@ -167,7 +194,6 @@ public class TaskActivity extends AppCompatActivity{
         importance.setText(task.getImportance());
         orgName.setText(task.getOrgName());
         address.setText(task.getAddress());
-        //telephone.setText(Client.INSTANCE.getTaskList().get(taskNumber).getTelephone());
         taskBody.setText(task.getBody());
         deadLine.setText(task.getDoneTime());
         userLogin.setText(usersManager.getUserById(task.getUserId()).getLogin());

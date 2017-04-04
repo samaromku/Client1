@@ -33,45 +33,59 @@ import java.util.List;
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.bind(tasks.get(position));
-            if(tasks.get(position).getStatus()!=null){
-            switch (tasks.get(position).getStatus()) {
-                case Task.DISAGREE_TASK:
-                    holder.itemView.setBackgroundColor(Color.RED);
-                    holder.title.setTextColor(Color.WHITE);
-                    holder.body.setTextColor(Color.WHITE);
-                    holder.address.setTextColor(Color.WHITE);
-                    holder.created.setTextColor(Color.WHITE);
-                    holder.firsLetter.setTextColor(Color.WHITE);
-                    holder.userLogin.setTextColor(Color.WHITE);
-                    break;
-                case Task.DONE_TASK:
+            if(tasks.get(position).getImportance()!=null){
+                if(tasks.get(position).getStatus().equals(Task.DONE_TASK)){
                     holder.itemView.setBackgroundColor(Color.LTGRAY);
-                    break;
-                case Task.NEED_HELP:
-                    holder.itemView.setBackgroundColor(Color. BLUE);
-                    holder.title.setTextColor(Color.WHITE);
-                    holder.body.setTextColor(Color.WHITE);
-                    holder.address.setTextColor(Color.WHITE);
-                    holder.created.setTextColor(Color.WHITE);
-                    holder.firsLetter.setTextColor(Color.WHITE);
-                    holder.userLogin.setTextColor(Color.WHITE);
-                    break;
-                case Task.DOING_TASK:
-                    holder.itemView.setBackgroundColor(Color.YELLOW);
-                    break;
-                case Task.DISTRIBUTED_TASK:
-                    holder.itemView.setBackgroundColor(Color.parseColor("#B2EBF2"));
-                    break;
-                case Task.CONTROL_TASK:
-                    holder.itemView.setBackgroundColor(Color.parseColor("#FCE4EC"));
-                    break;
-                case Task.NEW_TASK:
-                    holder.itemView.setBackgroundColor(Color.WHITE);
-                    break;
-                default:
-                    holder.itemView.setBackgroundColor(Color.WHITE);
-                    break;
-            }
+                    holder.title.setTextColor(Color.BLACK);
+                    holder.body.setTextColor(Color.BLACK);
+                    holder.address.setTextColor(Color.BLACK);
+                    holder.created.setTextColor(Color.BLACK);
+                    holder.firsLetter.setTextColor(Color.BLACK);
+                    holder.userLogin.setTextColor(Color.BLACK);
+                    return;
+                }
+
+                switch (tasks.get(position).getImportance()){
+                    case Task.STANDART:
+                        holder.itemView.setBackgroundColor(Color.WHITE);
+                        holder.title.setTextColor(Color.BLACK);
+                        holder.body.setTextColor(Color.BLACK);
+                        holder.address.setTextColor(Color.BLACK);
+                        holder.created.setTextColor(Color.BLACK);
+                        holder.firsLetter.setTextColor(Color.BLACK);
+                        holder.userLogin.setTextColor(Color.BLACK);
+                        break;
+
+                    case Task.AVARY:
+                        holder.itemView.setBackgroundColor(Color.RED);
+                        holder.title.setTextColor(Color.WHITE);
+                        holder.body.setTextColor(Color.WHITE);
+                        holder.address.setTextColor(Color.WHITE);
+                        holder.created.setTextColor(Color.WHITE);
+                        holder.firsLetter.setTextColor(Color.WHITE);
+                        holder.userLogin.setTextColor(Color.WHITE);
+                        break;
+
+                    case Task.INFO:
+                        holder.itemView.setBackgroundColor(Color. BLUE);
+                        holder.title.setTextColor(Color.WHITE);
+                        holder.body.setTextColor(Color.WHITE);
+                        holder.address.setTextColor(Color.WHITE);
+                        holder.created.setTextColor(Color.WHITE);
+                        holder.firsLetter.setTextColor(Color.WHITE);
+                        holder.userLogin.setTextColor(Color.WHITE);
+                        break;
+
+                    default:
+                        holder.itemView.setBackgroundColor(Color.WHITE);
+                        holder.title.setTextColor(Color.BLACK);
+                        holder.body.setTextColor(Color.BLACK);
+                        holder.address.setTextColor(Color.BLACK);
+                        holder.created.setTextColor(Color.BLACK);
+                        holder.firsLetter.setTextColor(Color.BLACK);
+                        holder.userLogin.setTextColor(Color.BLACK);
+                        break;
+                }
             }
         }
 
@@ -105,8 +119,19 @@ import java.util.List;
                 created.setText(task.getCreated());
                 body.setText(task.getBody());
                 userLogin.setText(UsersManager.INSTANCE.getUserById(task.getUserId()).getLogin());
-                //char[] str = task.getTitle().toCharArray();
-                firsLetter.setText(String.valueOf(getAdapterPosition()+1));
+                char[] str = task.getStatus().toCharArray();
+                /*Ставим плюсики и крестики*/
+                switch (task.getStatus()) {
+                    case Task.NEED_HELP:
+                        firsLetter.setText("+");
+                        break;
+                    case Task.DONE_TASK:
+                        firsLetter.setText("X");
+                        break;
+                    default:
+                        firsLetter.setText(String.valueOf(str[0]).toUpperCase());
+                        break;
+                }
             }
 
             @Override
