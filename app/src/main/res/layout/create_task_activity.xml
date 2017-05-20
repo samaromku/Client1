@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+        <AutoCompleteTextView
+            android:id="@+id/task_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/address"/>
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatSpinner
         android:layout_width="match_parent"
@@ -41,16 +56,6 @@
         android:textColor="@android:color/white"
         />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-    <AutoCompleteTextView
-        android:id="@+id/task_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/org_name"/>
-    </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatSpinner
         android:layout_width="match_parent"
@@ -77,3 +82,4 @@
         android:id="@+id/create_task_btn"/>
 
 </LinearLayout>
+    </ScrollView>

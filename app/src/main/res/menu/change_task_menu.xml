@@ -11,5 +11,9 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/remove_btn" />
 
+    <item android:id="@+id/check_as_done"
+        android:title="@string/done_task"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/done_task" />
 
 </menu>

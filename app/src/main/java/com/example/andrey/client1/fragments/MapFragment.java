@@ -38,12 +38,9 @@ public class MapFragment extends SupportMapFragment {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                map = googleMap;
-                updateUI();
-            }
+        getMapAsync(googleMap -> {
+            map = googleMap;
+            updateUI();
         });
     }
 
@@ -59,7 +56,9 @@ public class MapFragment extends SupportMapFragment {
             map.addMarker(mark);
         }
         LatLng myPoint = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        MarkerOptions myMarker = new MarkerOptions().position(myPoint).title(usersManager.getUser().getLogin());
+        MarkerOptions myMarker = new MarkerOptions()
+                .position(myPoint)
+                .title(usersManager.getUser().getLogin()+(int)myPoint.latitude+(int)myPoint.longitude);
         map.addMarker(myMarker);
 
         LatLngBounds bounds = new LatLngBounds.Builder()
@@ -68,6 +67,12 @@ public class MapFragment extends SupportMapFragment {
 
         int margin = 300;
         CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, margin);
-        map.animateCamera(update);
+//        map.animateCamera(update);
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                map.moveCamera(update);
+            }
+        });
     }
 }

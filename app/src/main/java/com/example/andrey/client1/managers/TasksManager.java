@@ -13,7 +13,7 @@ public class TasksManager {
     private String status;
     private String[] importanceString = new String[]{Task.STANDART, Task.INFO, Task.AVARY, Task.TIME};
     private String[] type = new String[]{"к сведению", "приемка", "УУИТЭ", "ИТП", "АРТФ"};
-    private String[] statusesForCreate = new String[]{Task.NEW_TASK, Task.DISTRIBUTED_TASK};
+    private String[] statusesForCreate = new String[]{Task.NEW_TASK};
     private String[] AllStatuses = new String[]{Task.NEW_TASK, Task.DISTRIBUTED_TASK, Task.DOING_TASK, Task.CONTROL_TASK, Task.DONE_TASK, Task.NEED_HELP};
     public static final TasksManager INSTANCE = new TasksManager();
 
@@ -73,6 +73,27 @@ public class TasksManager {
         }
         return null;
     }
+
+    public List<Task>notDoneTasks(){
+        List<Task>notDoneTasksList = new ArrayList<>();
+        for(Task t:tasks){
+            if(!t.getStatus().equals(Task.DONE_TASK)){
+                notDoneTasksList.add(t);
+            }
+        }
+        return notDoneTasksList;
+    }
+
+    public List<Task>doneTasks(){
+        List<Task>DoneTasksList = new ArrayList<>();
+        for(Task t:tasks){
+            if(t.getStatus().equals(Task.DONE_TASK)){
+                DoneTasksList.add(t);
+            }
+        }
+        return DoneTasksList;
+    }
+
     public void removeDone(){
         Iterator<Task> iterator = tasks.iterator();
         while(iterator.hasNext()){

@@ -6,6 +6,7 @@ import com.example.andrey.client1.entities.Task;
 import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.entities.UserCoords;
 import com.example.andrey.client1.entities.UserRole;
+import com.example.andrey.client1.managers.TokenManager;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class Response {
     private List<Address> addresses;
     private List<UserCoords>userCoordsList;
     private UserRole userRole;
+    private Token token;
     public static final String ADD_ACTION_ADMIN = "addActionAdmin";
     public static final String ADD_TASKS_TO_USER = "addTasksToUser";
     public static final String ADD_COMMENTS = "add_comments";
@@ -33,6 +35,8 @@ public class Response {
     public static final String ADD_LATEST_USER_COORDS = "add_latest_user_coords";
     public static final String SUCCESS_REMOVE_USER = "success_remove_user";
     public static final String SUCCESS_REMOVE_TASK = "success_remove_task";
+    public static final String SUCCESS_UPDATE_TASKS = "success_update_tasks";
+    public static final String NOT_SUCCESS_AUTH = "not_success_auth";
 
     public List<UserCoords> getUserCoordsList() {
         return userCoordsList;
@@ -80,5 +84,9 @@ public class Response {
 
     public List<User> getUserList() {
         return userList;
+    }
+
+    public Token getToken() {
+        return token;
     }
 }

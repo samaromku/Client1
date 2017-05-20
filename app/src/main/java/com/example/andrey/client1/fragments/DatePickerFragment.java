@@ -13,8 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
-
-import com.example.andrey.client1.OnDataPass;
 import com.example.andrey.client1.R;
 
 import java.util.Calendar;
@@ -27,7 +25,6 @@ public class DatePickerFragment extends DialogFragment {
     private static final int REQUEST_DATE = 0;
     private DatePicker datePicker;
     private static final String DIALOG_DATE = "date_dialog";
-    OnDataPass dataPasser;
 
 
     public static DatePickerFragment newInstance(Date date){
@@ -79,13 +76,7 @@ public class DatePickerFragment extends DialogFragment {
         dialog.setTargetFragment(this, REQUEST_DATE);
         dialog.show(manager, DIALOG_DATE);
         System.out.println("передаем дату в таймпикер" + date);
-//        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        dataPasser = (OnDataPass) context;
-    }
 }
 

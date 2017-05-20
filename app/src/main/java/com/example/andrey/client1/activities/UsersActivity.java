@@ -2,7 +2,6 @@ package com.example.andrey.client1.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -13,15 +12,16 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.storage.Updater;
 import com.example.andrey.client1.adapter.UserAdapter;
 import com.example.andrey.client1.entities.UserRole;
 import com.example.andrey.client1.managers.UserRolesManager;
 import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
+import com.example.andrey.client1.storage.ConverterMessages;
 import com.example.andrey.client1.storage.JsonParser;
 import com.example.andrey.client1.storage.OnListItemClickListener;
-import com.example.andrey.client1.storage.UpdateData;
 
 public class UsersActivity extends AppCompatActivity{
     FloatingActionButton addUser;
@@ -31,6 +31,7 @@ public class UsersActivity extends AppCompatActivity{
     UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
     Client client = Client.INSTANCE;
     JsonParser parser = new JsonParser();
+    private ConverterMessages converter = new ConverterMessages();
 
 
     @Override
@@ -44,7 +45,7 @@ public class UsersActivity extends AppCompatActivity{
         userList.setLayoutManager(new LinearLayoutManager(this));
         adapter = new UserAdapter(usersManager.getUsers(), clickListener);
         userList.setAdapter(adapter);
-        update();
+//        update();
     }
 
     private OnListItemClickListener clickListener = (v, position) -> {
@@ -67,8 +68,10 @@ public class UsersActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_map:
-            client.sendMessage(parser.requestToServer(new Request(Request.GIVE_ME_LAST_USERS_COORDS)));
-            startActivity(new Intent(this, MapActivity.class));
+                Intent intent = new Intent(this, MapActivity.class);
+                new Updater(this, new Request(Request.GIVE_ME_LAST_USERS_COORDS), intent).execute();
+//            converter.sendMessage(new Request(Request.GIVE_ME_LAST_USERS_COORDS));
+//            startActivity(new Intent(this, MapActivity.class));
             return true;
 
             default:
@@ -82,8 +85,8 @@ public class UsersActivity extends AppCompatActivity{
         boolean isNewUser = intent.getBooleanExtra("newUser", false);
         boolean isRemoveUser = intent.getBooleanExtra("removeUser", false);
         if(isNewUser || isRemoveUser){
-            UpdateData data = new UpdateData(this, adapter);
-            data.execute();
+//            UpdateData data = new UpdateData(this, adapter);
+//            data.execute();
         }
     }
 

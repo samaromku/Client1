@@ -1,11 +1,7 @@
 package com.example.andrey.client1.activities;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.storage.Updater;
 import com.example.andrey.client1.adapter.CommentsAdapter;
+import com.example.andrey.client1.entities.User;
+import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.managers.CommentsManager;
 import com.example.andrey.client1.managers.TasksManager;
 import com.example.andrey.client1.managers.UserRolesManager;
@@ -26,6 +25,7 @@ import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.entities.Comment;
 import com.example.andrey.client1.network.Request;
 import com.example.andrey.client1.entities.Task;
+import com.example.andrey.client1.storage.ConverterMessages;
 import com.example.andrey.client1.storage.DateUtil;
 import com.example.andrey.client1.storage.JsonParser;
 import com.example.andrey.client1.storage.OnListItemClickListener;
@@ -35,7 +35,7 @@ public class TaskActivity extends AppCompatActivity{
     private TextView importance;
     private TextView orgName;
     private TextView address;
-    private TextView telephone;
+    private Button distributed;
     private TextView taskBody;
     private TextView deadLine;
     private TextView userLogin;
@@ -52,8 +52,8 @@ public class TaskActivity extends AppCompatActivity{
     UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
     Task task;
     Comment newComment;
-    private Client client = Client.INSTANCE;
-    private JsonParser parser = new JsonParser();
+    private DateUtil dateUtil = new DateUtil();
+    private AddressManager addressManager = AddressManager.INSTANCE;
 
     private OnListItemClickListener clickListener = (v, position) -> {};
 
@@ -69,8 +69,31 @@ public class TaskActivity extends AppCompatActivity{
         adapter = new CommentsAdapter(commentsManager.getCommentsByTaskId(task.getId()), clickListener);
         commentsList.setAdapter(adapter);
         btnClicks();
-        UpdateData data = new UpdateData();
-        data.execute();
+        setEnableBtns();
+//        UpdateData data = new UpdateData();
+//        data.execute();
+    }
+
+    private void setEnableBtns(){
+//        - новая, помощь, отказ - взять себе доступна, остальные блок
+        if(task.getStatus().equals(Task.NEW_TASK) ||
+            task.getStatus().equals(Task.DISAGREE_TASK) ||
+            task.getStatus().equals(Task.NEED_HELP)){
+            needHelp.setEnabled(false);
+            disAgree.setEnabled(false);
+            doneBtn.setEnabled(false);
+        }
+//        - распределена - взять себе блок, перевести в выполненные блок остальные доступны
+        else if(task.getStatus().equals(Task.DISTRIBUTED_TASK)){
+            distributed.setEnabled(false);
+        }
+// - контроль - взять себе, перевести в выполненные - доступ, остальные блок
+        else if(task.getStatus().equals(Task.CONTROL_TASK)){
+            needHelp.setEnabled(false);
+            disAgree.setEnabled(false);
+            doneBtn.setEnabled(false);
+        }
+//        - выполненные - неважно
     }
 
 
@@ -81,22 +104,47 @@ public class TaskActivity extends AppCompatActivity{
         }
         return true;
     }
+//
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        if(task.getStatus().equals(Task.DISTRIBUTED_TASK)||
+//                task.getStatus().equals(Task.NEW_TASK) ||
+//                task.getStatus().equals(Task.DISAGREE_TASK) ||
+//                task.getStatus().equals(Task.NEED_HELP)){
+//            menu.getItem(R.id.check_as_done).setEnabled(false);
+//        }
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.change_task:
-            startActivity(new Intent(this, UpdateTaskActivity.class).putExtra("taskId", task.getId()));
+                firstTimeAddAddresses();
                 commentsManager.removeAll();
                 return true;
             case R.id.remove_task:
-                client.sendMessage(parser.requestToServer(new Request(task, Request.REMOVE_TASK)));
-                startActivity(new Intent(this, AccountActivity.class).putExtra("removeTask", true));
                 commentsManager.removeAll();
+                tasksManager.setRemoveTask(task);
+                Intent intent = new Intent(this, AccountActivity.class).putExtra("removeTask", true);
+                new Updater(this, new Request(task, Request.REMOVE_TASK), intent).execute();
+//                converter.sendMessage(new Request(task, Request.REMOVE_TASK));
+//                startActivity(new Intent(this, AccountActivity.class).putExtra("removeTask", true));
+                return true;
+            case R.id.check_as_done:
+                clickToChangeStatus(Task.DONE_TASK);
                 return true;
             default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    private void firstTimeAddAddresses(){
+        Intent intent = new Intent(this, UpdateTaskActivity.class).putExtra("taskId", task.getId());
+        if(addressManager.getAddresses().size()==0) {
+            new Updater(this, new Request(Request.GIVE_ME_ADDRESSES_PLEASE), intent).execute();
+        }else startActivity(intent);
     }
 
     @Override
@@ -106,51 +154,13 @@ public class TaskActivity extends AppCompatActivity{
         commentsManager.removeAll();
     }
 
-    private class UpdateData extends AsyncTask<Void, Void, Void> {
-        private ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(TaskActivity.this);
-            dialog.setTitle("Загружаются данные");
-            dialog.setCancelable(true);
-            dialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            while (true) {
-                if (client.getThread() != null) {
-                    if (!client.getThread().isInterrupted()) {
-                        try {
-                            client.getThread().join();
-                            Thread.sleep(500);
-                            break;
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            adapter = new CommentsAdapter(commentsManager.getCommentsByTaskId(task.getId()), clickListener);
-            commentsList.setAdapter(adapter);
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-        }
-    }
-
-
     private void btnClicks(){
         doneBtn.setOnClickListener(v -> clickOnButton(Task.CONTROL_TASK));
         needHelp.setOnClickListener(v -> clickOnButton(Task.NEED_HELP));
         disAgree.setOnClickListener(v -> clickOnButton(Task.DISAGREE_TASK));
+        distributed.setOnClickListener(v -> clickToChangeStatus(Task.DISTRIBUTED_TASK));
     }
+
 
     private void clickOnButton(String actionTask){
         if(comment.getText().toString().equals("")){
@@ -166,10 +176,22 @@ public class TaskActivity extends AppCompatActivity{
             //добавить в бдб отправить на сервер
             tasksManager.setStatus(actionTask);
             commentsManager.setComment(newComment);
-            client.sendMessage(new JsonParser().requestToServer(new Request(newComment, actionTask)));
-            startActivity(new Intent(this, AccountActivity.class).putExtra("statusChanged", true));
             commentsManager.removeAll();
+            Intent intent = new Intent(this, AccountActivity.class).putExtra("statusChanged", true);
+            new Updater(this, new Request(newComment, actionTask), intent).execute();
+//            converter.sendMessage(new Request(newComment, actionTask));
+//            startActivity(new Intent(this, AccountActivity.class).putExtra("statusChanged", true));
         }
+    }
+
+    //юзер решил взять заявку себе
+    private void clickToChangeStatus(String changedStatusTask){
+        task.setUserId(usersManager.getUser().getId());
+        task.setStatus(changedStatusTask);
+        tasksManager.setTask(task);
+        commentsManager.removeAll();
+        Intent intent = new Intent(this, AccountActivity.class).putExtra("statusChanged", true);
+        new Updater(this, new Request(task, changedStatusTask), intent).execute();
     }
 
     private void initiate(){
@@ -178,7 +200,7 @@ public class TaskActivity extends AppCompatActivity{
         importance = (TextView) findViewById(R.id.importance);
         orgName = (TextView) findViewById(R.id.org_name);
         address = (TextView) findViewById(R.id.address);
-        telephone = (TextView) findViewById(R.id.telefon);
+        distributed = (Button) findViewById(R.id.distibuted);
         taskBody = (TextView) findViewById(R.id.task_body);
         deadLine = (TextView) findViewById(R.id.deadline);
         doneBtn = (Button) findViewById(R.id.done);
@@ -196,6 +218,10 @@ public class TaskActivity extends AppCompatActivity{
         address.setText(task.getAddress());
         taskBody.setText(task.getBody());
         deadLine.setText(task.getDoneTime());
-        userLogin.setText(usersManager.getUserById(task.getUserId()).getLogin());
+        //заглушка на удаленного пользователя
+        User userWithNotName = usersManager.getUserById(task.getUserId());
+        if(userWithNotName!=null) {
+            userLogin.setText(usersManager.getUserById(task.getUserId()).getLogin());
+        }else userLogin.setText("Удален");
     }
 }

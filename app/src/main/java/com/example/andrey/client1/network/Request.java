@@ -5,6 +5,7 @@ import com.example.andrey.client1.entities.Task;
 import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.entities.UserCoords;
 import com.example.andrey.client1.entities.UserRole;
+import com.example.andrey.client1.managers.TokenManager;
 
 public class Request {
     private String request;
@@ -13,6 +14,7 @@ public class Request {
     private UserRole userRole;
     private Comment comment;
     private UserCoords userCoords;
+    private Token token;
     public static final String ADD_TASK_TO_SERVER = "add_task_to_server";
     public static final String WANT_SOME_COMMENTS = "give_me_comments_by_task_id";
     public static final String CHANGE_PERMISSION_PLEASE = "change_permission_please";
@@ -24,7 +26,13 @@ public class Request {
     public static final String GIVE_ME_LAST_USERS_COORDS = "give_me_last_users_coords";
     public static final String REMOVE_TASK = "remove_task";
     public static final String REMOVE_USER = "remove_user";
+    public static final String AUTH = "auth";
+    public static final String LOGOUT = "logout";
+    public static final String UPDATE_TASKS = "update_tasks";
 
+    public void setToken(Token token) {
+        this.token = token;
+    }
 
     public Request(Task task, String request){
         this.task = task;

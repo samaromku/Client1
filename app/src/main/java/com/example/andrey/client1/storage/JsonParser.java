@@ -6,11 +6,6 @@ import com.example.andrey.client1.entities.User;
 import com.google.gson.Gson;
 
 public class JsonParser {
-    String auth = "auth";
-    public String parseAuthUser(String name, String password){
-        return new Gson().toJson(new User(name, password));
-    }
-
     public Response parseFromServerUserTasks(String str){
         return new Gson().fromJson(str, Response.class);
     }

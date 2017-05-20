@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:padding="8dp">
+    android:layout_height="105dp"
+    android:padding="8dp"
+    style="?android:listSeparatorTextViewStyle">
 
     <TextView
         android:layout_width="35dp"
         android:layout_height="25dp"
-        tools:text = "12"
+        tools:text = "К"
         android:id="@+id/firstLetter"
         android:textSize="23sp"
         android:gravity="center"
@@ -29,7 +29,10 @@
         android:layout_height="wrap_content"
         android:textSize="17sp"
         android:textStyle="bold"
-        tools:text = "Поменять трубы на периметре "
+        android:maxLines="1"
+        android:ellipsize="marquee"
+        android:layout_marginRight="100dp"
+        tools:text = "Поменять трубы на периметре Поменять трубы на периметре Поменять трубы на периметре "
         android:textColor="@color/darkGreen"/>
 
     <TextView
@@ -41,17 +44,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:minWidth="40dp"
-        tools:text = "Andre"
-        android:textColor="@color/darkGreen"/>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/firstLetter"
-        android:layout_below="@+id/title"
-        android:id="@+id/body"
-        android:maxLines="2"
+        tools:text = "Не назначена"
         android:textColor="@color/darkGreen"/>
 
     <TextView
@@ -59,19 +52,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text = "Савушкина, 25"
-        android:layout_below="@+id/body"
-        android:layout_marginTop="8dp"
+        android:layout_below="@+id/title"
+        android:layout_toEndOf="@+id/firstLetter"
+        android:layout_toRightOf="@id/firstLetter"
         android:textColor="@color/darkGreen"/>
 
+
     <TextView
-        android:layout_below="@+id/body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/address"
+        android:id="@+id/body"
+        android:maxLines="2"
+        android:ellipsize="marquee"
+        android:layout_marginRight="100dp"
+        android:layout_marginEnd="100dp"
+        tools:text = "Текст задания, он очень большой, так что приходится изаращаться как только можно, чтобы все"
+        android:textColor="@color/darkGreen"/>
+
+
+    <TextView
+        android:layout_below="@+id/address"
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text = "15 янв 20:00"
+        tools:text = "Выполнить до\n11/12/17 20:00"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/darkGreen"/>
+        android:gravity="center_horizontal"
+        android:textColor="@color/darkGreen"
+         />
 
     <!--<Button
         android:layout_width="wrap_content"

@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,6 +20,9 @@ public class MyLocation {
 
     public boolean getLocation(Context context, LocationResult result)
     {
+        if(Looper.myLooper()==null) {
+            Looper.prepare();
+        }
         //I use LocationResult callback class to pass location value from MyLocation to user code.
         locationResult=result;
         if(lm==null)
@@ -38,6 +42,7 @@ public class MyLocation {
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
         timer1=new Timer();
         timer1.schedule(new GetLastLocation(), 5000);
+//        Looper.loop();
         return true;
     }
 

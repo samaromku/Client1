@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.andrey.client1.R;
-import com.example.andrey.client1.storage.UpdateData;
 import com.example.andrey.client1.adapter.AddressAdapter;
 import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.storage.OnListItemClickListener;
@@ -30,8 +29,6 @@ public class AddressActivity extends AppCompatActivity {
         addressesList.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AddressAdapter(addressManager.getAddresses(), clickListener);
         addressesList.setAdapter(adapter);
-        UpdateData test = new UpdateData(this, adapter);
-        test.execute();
     }
 
     @Override

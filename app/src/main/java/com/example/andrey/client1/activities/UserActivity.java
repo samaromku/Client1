@@ -6,25 +6,23 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.storage.Updater;
 import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.managers.UserRolesManager;
 import com.example.andrey.client1.managers.UsersManager;
-import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
-import com.example.andrey.client1.storage.JsonParser;
+import com.example.andrey.client1.storage.ConverterMessages;
 
 public class UserActivity extends AppCompatActivity{
     private User user;
     private ImageView change;
     UsersManager usersManager = UsersManager.INSTANCE;
     UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
-    private Client client = Client.INSTANCE;
-    private JsonParser parser = new JsonParser();
+    private ConverterMessages converter = new ConverterMessages();
 
 
     @Override
@@ -57,9 +55,12 @@ public class UserActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.remove_user:
-                client.sendMessage(parser.requestToServer(new Request(user, Request.REMOVE_USER)));
+                Intent intent = new Intent(this, UsersActivity.class).putExtra("removeUser", true);
                 usersManager.setRemoveUser(user);
-                startActivity(new Intent(this, UsersActivity.class).putExtra("removeUser", true));
+                new Updater(this, new Request(user, Request.REMOVE_USER), intent).execute();
+//                converter.sendMessage(new Request(user, Request.REMOVE_USER));
+
+//                startActivity(new Intent(this, UsersActivity.class).putExtra("removeUser", true));
                 return true;
 
             default:

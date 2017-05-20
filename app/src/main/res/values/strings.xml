@@ -37,7 +37,7 @@
     <string name="comment_tasks">Комментирование заявок </string>
     <string name="change_password">Смена пароля </string>
 
-    <string name="org_name">Имя организации: </string>
+    <string name="org_name">Имя: </string>
     <string name="important">Важность: </string>
     <string name="type_task">Тип заявки: </string>
     <string name="task_body">Что нужно сделать</string>
@@ -56,4 +56,6 @@
     <string name="map">Карта</string>
     <string name="change_task">Изменить задание</string>
     <string name="remove">удалить</string>
+    <string name="take">Взять себе</string>
+    <string name="done_task">Исполнено</string>
 </resources>

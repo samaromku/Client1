@@ -12,11 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.storage.Updater;
 import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.entities.UserRole;
-import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
-import com.example.andrey.client1.storage.JsonParser;
+import com.example.andrey.client1.storage.ConverterMessages;
 import com.example.andrey.client1.storage.SHAHashing;
 
 public class CreateUserActivity extends AppCompatActivity {
@@ -30,10 +30,9 @@ public class CreateUserActivity extends AppCompatActivity {
     String[] roles;
     private User user;
     String roleName;
-    JsonParser parser = new JsonParser();
     boolean isChecked = false;
     SHAHashing hashing = new SHAHashing();
-    private Client client = Client.INSTANCE;
+    private ConverterMessages converter = new ConverterMessages();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,13 +79,15 @@ public class CreateUserActivity extends AppCompatActivity {
                     phone.getText().toString(),
                     email.getText().toString()
             );
-            client.sendMessage(parser.requestToServer(new Request(user, Request.ADD_NEW_USER)));
+//            converter.sendMessage(new Request(user, Request.ADD_NEW_USER));
             login.setText("");
             password.setText("");
             phone.setText("");
             email.setText("");
             fio.setText("");
-            startActivity(new Intent(CreateUserActivity.this, UsersActivity.class).putExtra("newUser", true));
+            Intent intent = new Intent(CreateUserActivity.this, UsersActivity.class).putExtra("newUser", true);
+            new Updater(this, new Request(user, Request.ADD_NEW_USER), intent).execute();
+//            startActivity(new Intent(CreateUserActivity.this, UsersActivity.class).putExtra("newUser", true));
         }
     }
 

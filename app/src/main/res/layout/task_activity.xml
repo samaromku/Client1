@@ -71,13 +71,11 @@
         android:layout_height="wrap_content"
         tools:text="ЖСК 10"
         android:textSize="18sp"
-        android:maxLines="1"
-        android:ellipsize="marquee"
         android:textColor="@color/darkGreen"
         />
 
     <TextView
-        android:layout_below="@+id/name_of_org"
+        android:layout_below="@+id/org_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/address"
@@ -88,19 +86,17 @@
         android:textColor="@color/darkGreen"/>
 
     <TextView
-        android:layout_below="@+id/name_of_org"
+        android:layout_below="@+id/org_name"
         android:layout_toRightOf="@+id/ad"
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Илюшина 40"
         android:textSize="18sp"
-        android:maxLines="1"
-        android:ellipsize="marquee"
         android:textColor="@color/darkGreen"/>
 
     <TextView
-        android:layout_below="@+id/ad"
+        android:layout_below="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tel"
@@ -111,7 +107,7 @@
         android:textColor="@color/darkGreen"/>
 
     <TextView
-        android:layout_below="@+id/ad"
+        android:layout_below="@+id/address"
         android:layout_toRightOf="@+id/tel"
         android:id="@+id/telefon"
         android:layout_width="wrap_content"
@@ -120,8 +116,6 @@
         android:textSize="18sp"
         android:autoLink="phone"
         android:clickable="true"
-        android:maxLines="1"
-        android:ellipsize="marquee"
         android:textColor="@android:color/holo_blue_bright"/>
 
     <TextView
@@ -211,20 +205,43 @@
         />
     </android.support.design.widget.TextInputLayout>
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/done"
+        android:orientation="horizontal"
         android:layout_below="@+id/hover_comment"
+        android:id="@+id/butt_layout_first"
+        android:layout_marginTop="8dp"
+        >
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/done"
+        android:layout_weight="1"
         android:text="@string/doneBtn"
         android:background="@color/darkGreen"
+        android:textColor="@android:color/white"
+        android:layout_marginRight="4dp"/>
+
+    <Button
+        android:layout_marginLeft="4dp"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/distibuted"
+        android:text="@string/take"
+        android:background="@android:color/holo_green_light"
         android:textColor="@android:color/white"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/done"
+        android:layout_below="@+id/butt_layout_first"
         android:id="@+id/butt_layout"
         android:layout_marginTop="8dp"
         >

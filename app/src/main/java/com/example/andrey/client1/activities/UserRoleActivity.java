@@ -9,11 +9,11 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.storage.Updater;
 import com.example.andrey.client1.managers.UserRolesManager;
-import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
 import com.example.andrey.client1.entities.UserRole;
-import com.example.andrey.client1.storage.JsonParser;
+import com.example.andrey.client1.storage.ConverterMessages;
 
 public class UserRoleActivity extends AppCompatActivity{
     private int userId;
@@ -30,10 +30,9 @@ public class UserRoleActivity extends AppCompatActivity{
     private CheckBox changePassword;
     private Button send;
     private UserRole userRole;
-    private JsonParser parser = new JsonParser();
     UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
     private boolean hasRight = false;
-    private Client client = Client.INSTANCE;
+    private ConverterMessages converter = new ConverterMessages();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class UserRoleActivity extends AppCompatActivity{
         init();
         send.setOnClickListener(v -> {
             addOrChangeUserRoleOnServer();
-            startActivity(new Intent(this, UsersActivity.class));
+//            startActivity(new Intent(this, UsersActivity.class));
         });
     }
 
@@ -64,8 +63,10 @@ public class UserRoleActivity extends AppCompatActivity{
                 commentTasks.isChecked(),
                 changePassword.isChecked(),
                 userId);
-            client.sendMessage(parser.requestToServer(new Request(userRole1, Request.CHANGE_PERMISSION_PLEASE)));
-            userRolesManager.setUpdateUserRole(userRole1);
+        userRolesManager.setUpdateUserRole(userRole1);
+        Intent intent = new Intent(this, UsersActivity.class);
+        new Updater(this, new Request(userRole1, Request.CHANGE_PERMISSION_PLEASE), intent).execute();
+//        converter.sendMessage(new Request(userRole1, Request.CHANGE_PERMISSION_PLEASE));
     }
 
     @Override

@@ -33,6 +33,15 @@ public class AddressManager {
         return null;
     }
 
+    public Address getAddressByAddress(String address){
+        for(Address a:addresses){
+            if(a.getAddress().equals(address)){
+                return a;
+            }
+        }
+        return null;
+    }
+
     public Address getAddressById(int id){
         for(Address a:addresses){
             if(a.getId()==id){

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,35 +16,34 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.andrey.client1.OnDataPass;
+import com.example.andrey.client1.network.CheckNetwork;
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.storage.Updater;
 import com.example.andrey.client1.entities.Address;
 import com.example.andrey.client1.entities.Task;
 import com.example.andrey.client1.fragments.DatePickerFragment;
 import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.managers.TasksManager;
 import com.example.andrey.client1.managers.UsersManager;
-import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
+import com.example.andrey.client1.storage.ConverterMessages;
 import com.example.andrey.client1.storage.DateUtil;
-import com.example.andrey.client1.storage.JsonParser;
 
-public class CreateTaskActivity extends AppCompatActivity implements OnDataPass {
+public class CreateTaskActivity extends AppCompatActivity {
     private AppCompatSpinner importanceSpinner;
     private AppCompatSpinner statusSpinner;
     private EditText body;
     private Button chooseDate;
-    private AutoCompleteTextView orgName;
+    private AutoCompleteTextView addressName;
     private AppCompatSpinner userSpinner;
     private AppCompatSpinner typeSpinner;
     private Button createTask;
     private String userName;
     private DateUtil dateUtil = new DateUtil();
-    private JsonParser parser = new JsonParser();
     private AddressManager addressManager = AddressManager.INSTANCE;
     private TasksManager tasksManager = TasksManager.INSTANCE;
     private UsersManager usersManager = UsersManager.INSTANCE;
-    private String[] org_names;
+    private String[] addressNameArray;
     private String[] importanceString = tasksManager.getImportanceString();
     private String[] userNames;
     private String[] statusesString = tasksManager.getStatusesForCreate();
@@ -54,11 +52,11 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
     private String typeSelected;
     private String impornanceSelected;
     private Address address = new Address();
-//    private boolean createTaskIsChecked = false;
     private int taskId = 0;
-    private Client client = Client.INSTANCE;
     private static final String DIALOG_DATE = "date_dialog";
     private int newUserPosition = 0;
+    private ConverterMessages converter = new ConverterMessages();
+    private CheckNetwork checkNetwork = CheckNetwork.instance;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,10 +67,11 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
         clickOnUserSpinner();
         clickOnImportance();
         clickOnType();
-//        checkRole();
         clickOnStatus();
 
-        createTask.setOnClickListener(v -> clickOnBtnCreateTask());
+        createTask.setOnClickListener(v ->
+                clickOnBtnCreateTask()
+        );
         chooseDate.setOnClickListener(v -> chooseDate());
     }
 
@@ -87,57 +86,38 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
         dialog.show(manager, DIALOG_DATE);
     }
 
-    private void clickOnBtnCreateTask(){
-//        if(createTaskIsChecked) {
-            if (orgName.getText().toString().equals("")) {
-                orgName.setHint("Вы должны заполнить это поле");
-            } else if (body.getText().toString().equals("")) {
-                body.setHint("Вы должны заполнить это поле");
-            } else if (chooseDate.getText().toString().equals("Выбрать дату")) {
-                chooseDate.setText("Вы должны заполнить это поле");
-            } else if (chooseDate.getText().toString().equals("Вы должны заполнить это поле")) {
-                chooseDate.setText("Вы должны заполнить это поле");
-            } else {
-                System.out.println(chooseDate);
-                if(taskId!=0){
-                    address.setId(tasksManager.getById(taskId).getAddressId());
-                    address.setAddress(tasksManager.getById(taskId).getAddress());
-                    address.setName(tasksManager.getById(taskId).getOrgName());
-                }else
-                    address = addressManager.getAddressByName(orgName.getText().toString());
-                Task task = new Task(
-                        tasksManager.getMaxId() + 1,
-                        dateUtil.currentDate(),
-                        impornanceSelected,
-                        body.getText().toString(),
-                        statusSelected,
-                        typeSelected,
-                        chooseDate.getText().toString(),
-                        usersManager.getUserByUserName(userName).getId(),
-                        address.getId()
-                );
-                task.setAddress(address.getAddress());
-                task.setOrgName(address.getName());
-                tasksManager.setTask(task);
-                if(taskId!=0){
-                    System.out.println("taskId "+ taskId);
-                    task.setId(taskId);
-
-                    client.sendMessage(parser.requestToServer(new Request(task, Request.UPDATE_TASK)));
-                }else {
-                    client.sendMessage(parser.requestToServer(new Request(task, Request.ADD_TASK_TO_SERVER)));
-                }
-                if(address.getId()==0){
-                    Toast.makeText(this, "Список адресов пуст, получите его", Toast.LENGTH_SHORT).show();
-                }else {
-                    startActivity(new Intent(this, AccountActivity.class).putExtra("createTask", true));
-                }
+    private void clickOnBtnCreateTask() {
+        if (addressName.getText().toString().equals("")) {
+            addressName.setHint("Вы должны заполнить это поле");
+        } else if (body.getText().toString().equals("")) {
+            body.setHint("Вы должны заполнить это поле");
+        } else if (chooseDate.getText().toString().equals("Выбрать дату")) {
+            chooseDate.setText("Вы должны заполнить это поле");
+        } else if (chooseDate.getText().toString().equals("Вы должны заполнить это поле")) {
+            chooseDate.setText("Вы должны заполнить это поле");
+        } else {
+            address = addressManager.getAddressByAddress(addressName.getText().toString());
+            Task task = new Task(
+                    tasksManager.getMaxId() + 1,
+                    dateUtil.currentDate(),
+                    impornanceSelected,
+                    body.getText().toString(),
+                    statusSelected,
+                    typeSelected,
+                    chooseDate.getText().toString(),
+                    usersManager.getUserByUserName(userName).getId(),
+                    address.getId()
+            );
+            task.setAddress(address.getAddress());
+            task.setOrgName(address.getName());
+            tasksManager.setTask(task);
+            if (address.getId() == 0) {
+                Toast.makeText(this, "Список адресов пуст, получите его", Toast.LENGTH_SHORT).show();
+            }else{
+                Intent intent = new Intent(this, AccountActivity.class);
+                new Updater(this, new Request(task, Request.ADD_TASK_TO_SERVER), intent).execute();
             }
-//        }
-//        else {
-//            Toast.makeText(this, "у вас нет прав", Toast.LENGTH_SHORT).show();
-//            startActivity(new Intent(this, AccountActivity.class));
-//        }
+        }
     }
 
     private void clickOnImportance(){
@@ -158,13 +138,6 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
             }
         });
     }
-//
-//    private void checkRole(){
-//        UserRole userRole = UserRolesManager.INSTANCE.getUserRole();
-//        if(userRole!=null && userRole.isMakeTasks()){
-//            createTaskIsChecked=true;
-//        }
-//    }
 
     private void clickOnStatus(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, statusesString);
@@ -245,7 +218,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
 
     private void init(){
         chooseDate = (Button) findViewById(R.id.choose_date);
-        orgName = (AutoCompleteTextView) findViewById(R.id.task_title);
+        addressName = (AutoCompleteTextView) findViewById(R.id.task_title);
         importanceSpinner = (AppCompatSpinner) findViewById(R.id.spinner_importance);
         statusSpinner = (AppCompatSpinner) findViewById(R.id.spinner_status);
         typeSpinner = (AppCompatSpinner) findViewById(R.id.spinner_type);
@@ -260,10 +233,10 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
 
 
     private void createUserNames(){
-        userNames = new String[usersManager.getUsers().size()];
-        for (int i = 0; i < usersManager.getUsers().size(); i++) {
-            userNames[i] = usersManager.getUsers().get(i).getLogin();
-        }
+        userNames = new String[]{usersManager.getUsers().get(0).getLogin()};
+//        for (int i = 0; i < usersManager.getUsers().size(); i++) {
+//            userNames[i] = usersManager.getUsers().get(i).getLogin();
+//        }
     }
 
     private void createImportance(){
@@ -271,18 +244,18 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
     }
 
     private void createOrgNames(){
-        org_names = new String[addressManager.getAddresses().size()];
+        addressNameArray = new String[addressManager.getAddresses().size()];
         for (int i = 0; i < addressManager.getAddresses().size(); i++) {
-            org_names[i] = addressManager.getAddresses().get(i).getName();
+            addressNameArray[i] = addressManager.getAddresses().get(i).getAddress();
         }
     }
 
 
     private void createDropMenuOrgNames(){
-        System.out.println(org_names.length);
-        orgName.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, org_names));
-        if(org_names.length==0){
-            orgName.setHint("Получите адреса в нужной вкладке");
+        System.out.println(addressNameArray.length);
+        addressName.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, addressNameArray));
+        if(addressNameArray.length==0){
+            addressName.setHint("Получите адреса в нужной вкладке");
         }
     }
 
@@ -297,7 +270,6 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
         switch (item.getItemId()) {
             case R.id.address:
                 getAddressesFromServer();
-                startActivity(new Intent(this, AddressActivity.class));
                 return true;
 
             default:
@@ -306,14 +278,9 @@ public class CreateTaskActivity extends AppCompatActivity implements OnDataPass 
     }
 
     private void getAddressesFromServer(){
-        if(addressManager.getAddresses().size()>0){
-            addressManager.removeAll();
-        }
-        client.sendMessage(parser.requestToServer(new Request(Request.GIVE_ME_ADDRESSES_PLEASE)));
-    }
-
-    @Override
-    public void onDataPass(String data) {
-        Log.i("CreateActivity", "onDataPass: " + data);
+//        addressManager.removeAll();
+        Intent intent = new Intent(this, AddressActivity.class);
+        startActivity(intent);
+//        new Updater(this, new Request(Request.GIVE_ME_ADDRESSES_PLEASE), intent).execute();
     }
 }

@@ -15,15 +15,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.andrey.client1.R;
+import com.example.andrey.client1.storage.Updater;
 import com.example.andrey.client1.entities.Address;
 import com.example.andrey.client1.entities.Task;
-import com.example.andrey.client1.entities.User;
 import com.example.andrey.client1.fragments.DatePickerFragment;
 import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.managers.TasksManager;
 import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
+import com.example.andrey.client1.storage.ConverterMessages;
 import com.example.andrey.client1.storage.DateUtil;
 import com.example.andrey.client1.storage.JsonParser;
 
@@ -32,7 +33,7 @@ public class UpdateTaskActivity extends AppCompatActivity{
     private AppCompatSpinner statusSpinner;
     private EditText body;
     private Button chooseDate;
-    private AutoCompleteTextView orgName;
+    private AutoCompleteTextView addressesForUpdate;
     private AppCompatSpinner userSpinner;
     private AppCompatSpinner typeSpinner;
     private Button createTask;
@@ -42,7 +43,7 @@ public class UpdateTaskActivity extends AppCompatActivity{
     private AddressManager addressManager = AddressManager.INSTANCE;
     private TasksManager tasksManager = TasksManager.INSTANCE;
     private UsersManager usersManager = UsersManager.INSTANCE;
-    private String[] org_names;
+    private String[] addresses;
     private String[] importance = tasksManager.getImportanceString();
     private String[] userNames;
     private String[] statuses = tasksManager.getAllStatuses();
@@ -56,6 +57,7 @@ public class UpdateTaskActivity extends AppCompatActivity{
     private static final String DIALOG_DATE = "date_dialog";
     private Client client = Client.INSTANCE;
     private int newUserPosition = 0;
+    private ConverterMessages converter = new ConverterMessages();
 
 
     @Override
@@ -77,20 +79,20 @@ public class UpdateTaskActivity extends AppCompatActivity{
     }
 
     private void clickOnBtnCreateTask(){
-        if (orgName.getText().toString().equals("")) {
-            orgName.setHint("Вы должны заполнить это поле");
+        if (addressesForUpdate.getText().toString().equals("")) {
+            addressesForUpdate.setHint("Вы должны заполнить это поле");
         } else if (body.getText().toString().equals("")) {
             body.setHint("Вы должны заполнить это поле");
         } else if (chooseDate.getText().toString().equals("Выбрать дату")) {
             chooseDate.setText("Вы должны заполнить это поле");
         } else {
-            System.out.println(chooseDate);
-            if(taskId!=0){
-                address.setId(tasksManager.getById(taskId).getAddressId());
-                address.setAddress(tasksManager.getById(taskId).getAddress());
-                address.setName(tasksManager.getById(taskId).getOrgName());
-            }else
-                address = addressManager.getAddressByName(orgName.getText().toString());
+//            System.out.println(chooseDate);
+//            if(taskId!=0){
+//                address.setId(tasksManager.getById(taskId).getAddressId());
+//                address.setAddress(tasksManager.getById(taskId).getAddress());
+//                address.setName(tasksManager.getById(taskId).getOrgName());
+//            }else
+                address = addressManager.getAddressByAddress(addressesForUpdate.getText().toString());
             Task task = new Task(
                     tasksManager.getMaxId() + 1,
                     dateUtil.currentDate(),
@@ -105,18 +107,15 @@ public class UpdateTaskActivity extends AppCompatActivity{
             task.setAddress(address.getAddress());
             task.setOrgName(address.getName());
             tasksManager.setTask(task);
-            if(taskId!=0){
-                System.out.println("taskId "+ taskId);
-                task.setId(taskId);
+            task.setId(taskId);
+//            converter.sendMessage(new Request(task, Request.UPDATE_TASK));
 
-                client.sendMessage(parser.requestToServer(new Request(task, Request.UPDATE_TASK)));
-            }else {
-                client.sendMessage(parser.requestToServer(new Request(task, Request.ADD_TASK_TO_SERVER)));
-            }
             if(address.getId()==0){
                 Toast.makeText(this, "Список адресов пуст, получите его", Toast.LENGTH_SHORT).show();
             }else {
-                startActivity(new Intent(this, AccountActivity.class).putExtra("createTask", true));
+                Intent intent = new Intent(this, AccountActivity.class).putExtra("createTask", true);
+                new Updater(this, new Request(task, Request.UPDATE_TASK), intent).execute();
+//                startActivity(new Intent(this, AccountActivity.class).putExtra("createTask", true));
             }
         }
     }
@@ -140,20 +139,21 @@ public class UpdateTaskActivity extends AppCompatActivity{
         body.setText(task.getBody());
         chooseDate.setText(task.getDoneTime());
         createTask.setText("Изменить задание");
-        orgName.setText(task.getOrgName());
+        addressesForUpdate.setText(task.getAddress());
         int userPosition = 0;
-        for (int i = 0; i < userNames.length; i++) {
-            if(userNames[i].equals(usersManager.getUserById(task.getUserId()).getLogin()))
-                userPosition = i;
+        //заглушка на удаленного пользователя
+        if(usersManager.getUserById(task.getUserId())!=null) {
+            for (int i = 0; i < userNames.length; i++) {
+                if (userNames[i].equals(usersManager.getUserById(task.getUserId()).getLogin()))
+                    userPosition = i;
+            }
         }
-        System.out.println(userPosition+"userPostition");
         userSpinner.setSelection(userPosition);
         int importancePostition = 0;
         for (int i = 0; i < importance.length; i++) {
             if(importance[i].equals(task.getImportance()))
                 importancePostition = i;
         }
-        System.out.println(importancePostition+"import");
         importanceSpinner.setSelection(importancePostition);
         int statusPosition = 0;
         for (int i = 0; i < statuses.length; i++) {
@@ -172,7 +172,7 @@ public class UpdateTaskActivity extends AppCompatActivity{
 
     private void init(){
         chooseDate = (Button) findViewById(R.id.choose_date);
-        orgName = (AutoCompleteTextView) findViewById(R.id.task_title);
+        addressesForUpdate = (AutoCompleteTextView) findViewById(R.id.task_title);
         importanceSpinner = (AppCompatSpinner) findViewById(R.id.spinner_importance);
         statusSpinner = (AppCompatSpinner) findViewById(R.id.spinner_status);
         typeSpinner = (AppCompatSpinner) findViewById(R.id.spinner_type);
@@ -198,18 +198,17 @@ public class UpdateTaskActivity extends AppCompatActivity{
     }
 
     private void createOrgNames(){
-        org_names = new String[addressManager.getAddresses().size()];
+        addresses = new String[addressManager.getAddresses().size()];
         for (int i = 0; i < addressManager.getAddresses().size(); i++) {
-            org_names[i] = addressManager.getAddresses().get(i).getName();
+            addresses[i] = addressManager.getAddresses().get(i).getAddress();
         }
     }
 
 
     private void createDropMenuOrgNames(){
-        System.out.println(org_names.length);
-        orgName.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, org_names));
-        if(org_names.length==0){
-            orgName.setHint("Получите адреса в нужной вкладке");
+        addressesForUpdate.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, addresses));
+        if(addresses.length==0){
+            addressesForUpdate.setHint("Получите адреса в нужной вкладке");
         }
     }
 

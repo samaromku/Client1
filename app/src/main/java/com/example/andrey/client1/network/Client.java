@@ -3,7 +3,6 @@ package com.example.andrey.client1.network;
 import android.util.Log;
 
 import com.example.andrey.client1.storage.DataWorker;
-import com.example.andrey.client1.storage.ThreadWorker;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,8 +18,8 @@ import java.net.UnknownHostException;
 public class Client {
     public static final Client INSTANCE = new Client();
     //    private static final String hostNameHome = "10.42.112.233";  // ноут алины
-//    private static final String hostNameHome = "192.168.137.1";  // ноут алины
-    private static final String hostNameHome = "192.168.0.98";  // внутренний тепломер
+    private static final String hostNameHome = "192.168.137.1";  // ноут алины
+//    private static final String hostNameHome = "192.168.0.98";  // внутренний тепломер
     private static final String hostNameOutside = "81.23.123.230";  // тепломер
     private String hostName = "";
     private static final int portNumber = 60123;

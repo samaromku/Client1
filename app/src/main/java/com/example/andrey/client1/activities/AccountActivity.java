@@ -5,19 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import com.example.andrey.client1.storage.ThreadWorker;
+import com.example.andrey.client1.storage.Updater;
+import com.example.andrey.client1.entities.Task;
+import com.example.andrey.client1.entities.User;
+import com.example.andrey.client1.managers.TokenManager;
+import com.example.andrey.client1.service.GpsService;
+import com.example.andrey.client1.storage.ConverterMessages;
 import com.example.andrey.client1.managers.AddressManager;
 import com.example.andrey.client1.managers.CommentsManager;
 import com.example.andrey.client1.managers.TasksManager;
@@ -26,45 +29,44 @@ import com.example.andrey.client1.managers.UsersManager;
 import com.example.andrey.client1.network.Client;
 import com.example.andrey.client1.network.Request;
 import com.example.andrey.client1.entities.UserRole;
-import com.example.andrey.client1.storage.JsonParser;
 import com.example.andrey.client1.storage.OnListItemClickListener;
 import com.example.andrey.client1.R;
 import com.example.andrey.client1.adapter.TasksAdapter;
 
-import java.io.IOException;
-
 public class AccountActivity extends AppCompatActivity {
-    FloatingActionButton addTask;
+    private FloatingActionButton addTask;
     private TasksAdapter adapter;
-    private RecyclerView tasksList;
-    private JsonParser parser = new JsonParser();
+    private SwipeRefreshLayout swipeLayout;
     private TasksManager tasksManager = TasksManager.INSTANCE;
     private UserRolesManager userRolesManager = UserRolesManager.INSTANCE;
-    private AddressManager addressManager = AddressManager.INSTANCE;
     private static final String TAG = "AccountActivity";
     private Client client = Client.INSTANCE;
+    private TokenManager tokenManager = TokenManager.instance;
+    private ConverterMessages converter = new ConverterMessages();
+    private UsersManager usersManager = UsersManager.INSTANCE;
+    private AddressManager addressManager = AddressManager.INSTANCE;
 
     private OnListItemClickListener clickListener = (v, position) -> {
-        client.sendMessage(parser.requestToServer(new Request(tasksManager.getTasks().get(position), Request.WANT_SOME_COMMENTS)));
-        startActivity(new Intent(AccountActivity.this, TaskActivity.class).putExtra("taskNumber", position));
+        Task task = tasksManager.getTasks().get(position);
+        Intent intent = new Intent(AccountActivity.this, TaskActivity.class).putExtra("taskNumber", position);
+        new Updater(this, new Request(task, Request.WANT_SOME_COMMENTS), intent).execute();
     };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_activity);
-        getSupportActionBar().setTitle("Аккаунт");
-//        startService(GpsService.newIntent(this));
-//        GpsService.setServiceAlarm(this, true);
-        tasksList = (RecyclerView) findViewById(R.id.tasks_list);
+        getSupportActionBar().setTitle("Привет, " + usersManager.getUser().getLogin());
+        RecyclerView tasksList = (RecyclerView) findViewById(R.id.tasks_list);
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         addTask = (FloatingActionButton) findViewById(R.id.add_task_btn);
-        addTask.setVisibility(View.INVISIBLE);
-
-        addTask.setOnClickListener(v -> startActivity(new Intent(AccountActivity.this, CreateTaskActivity.class)));
+        buttonAddTask();
+        addTask.setOnClickListener(v -> firstTimeAddAddresses());
         tasksList.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TasksAdapter(tasksManager.getTasks(), clickListener);
         tasksList.setAdapter(adapter);
         outsideIntents();
+        swipeLayout.setOnRefreshListener(() -> new UpdateDataSwip().execute());
     }
 
     private void outsideIntents(){
@@ -73,14 +75,21 @@ public class AccountActivity extends AppCompatActivity {
         boolean createTask = intent.getBooleanExtra("createTask", false);
         boolean changeStatus = intent.getBooleanExtra("statusChanged", false);
         boolean removeTask = intent.getBooleanExtra("removeTask", false);
-        if(auth) {
-            checkAuth();
-            UpdateDataAccountActivity test = new UpdateDataAccountActivity(this, adapter);
-            test.execute();
-        } else if(createTask || changeStatus || removeTask){
-            UpdateDataAccountActivity test = new UpdateDataAccountActivity(this, adapter);
-            test.execute();
-        }
+//        if(auth) {
+//            checkAuth();
+//            UpdateDataAccountActivity test = new UpdateDataAccountActivity(this, adapter);
+//            test.execute();
+//        } else if(createTask || changeStatus || removeTask){
+//            UpdateDataAccountActivity test = new UpdateDataAccountActivity(this, adapter);
+//            test.execute();
+//        }
+    }
+
+    private void firstTimeAddAddresses(){
+        Intent intent = new Intent(this, CreateTaskActivity.class);
+        if(addressManager.getAddresses().size()==0) {
+            new Updater(this, new Request(Request.GIVE_ME_ADDRESSES_PLEASE), intent).execute();
+        }else startActivity(intent);
     }
 
     @Override
@@ -96,93 +105,12 @@ public class AccountActivity extends AppCompatActivity {
         //кнопка добавить задание
         UserRole userRole = userRolesManager.getUserRole();
         if(userRole!=null){
-            if(userRole.isMakeTasks())
+            if(userRole.isMakeTasks()) {
                 addTask.setVisibility(View.VISIBLE);
+            }
             else addTask.setVisibility(View.INVISIBLE);
         }
     }
-
-
-    private class UpdateDataAccountActivity extends AsyncTask<Void, Void, Void> {
-        private Context context;
-        private RecyclerView.Adapter adapter;
-        private ProgressDialog dialog;
-        private Client client = Client.INSTANCE;
-        private static final String TAG = "updateDate";
-
-         UpdateDataAccountActivity(Context context, RecyclerView.Adapter adapter){
-            this.context = context;
-            this.adapter = adapter;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(context);
-            dialog.setTitle("Загружаются данные");
-            dialog.setCancelable(true);
-            dialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            while(true){
-                if (client.getThread() != null) {
-                    try {
-                        client.getThread().join();
-                        Log.i(TAG, "doInBackground: thread joined");
-                        Thread.sleep(1000);
-                        break;
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            adapter.notifyDataSetChanged();
-            buttonAddTask();
-            if(dialog.isShowing()){
-                dialog.dismiss();
-            }
-        }
-    }
-
-
-    public void checkAuth(){
-        Handler handler = new Handler();
-        new Thread(() -> {
-            while(true){
-                if (client.getThread() != null) {
-                    try {
-                        client.getThread().join();
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (!client.isAuth()) {
-                        handler.post(() -> {
-                            Toast.makeText(AccountActivity.this, "вы не зарегистрированы в системе", Toast.LENGTH_SHORT).show();
-                            try {
-//                                stopService(new Intent(GpsService.newIntent(this)));
-                                client.stop();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            startActivity(new Intent(AccountActivity.this, AuthActivity.class));
-                        });
-                        break;
-                    } else
-                        handler.post(() -> Toast.makeText(AccountActivity.this, "вы успешно подключились", Toast.LENGTH_SHORT).show());
-                    break;
-                }
-            }
-            }).start();
-
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -195,16 +123,8 @@ public class AccountActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                try {
-                    client.setAuth(false);
-                    client.stop();
-                    allClear();
-//                    stopService(new Intent(GpsService.newIntent(this)));
-                    System.out.println("стопарим сервис");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                startActivity(new Intent(AccountActivity.this, AuthActivity.class));
+                Intent intent = new Intent(AccountActivity.this, AuthActivity.class);
+                new LogoutUpdater(this, new Request(Request.LOGOUT), intent).execute();
                 return true;
 
             case R.id.users:
@@ -223,5 +143,67 @@ public class AccountActivity extends AppCompatActivity {
         CommentsManager.INSTANCE.removeAll();
         userRolesManager.removeAll();
         UsersManager.INSTANCE.removeAll();
+    }
+
+    private class UpdateDataSwip extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            swipeLayout.setRefreshing(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            User user = usersManager.getUser();
+            Request request = new Request(user, Request.UPDATE_TASKS);
+            converter.authMessage(request);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            adapter.notifyDataSetChanged();
+            swipeLayout.setRefreshing(false);
+        }
+    }
+
+    private class LogoutUpdater extends AsyncTask<Void, Void, Void>{
+        private ProgressDialog dialog;
+        private Context context;
+        private Request request;
+        private Intent intent;
+        private ConverterMessages converter = new ConverterMessages();
+
+        LogoutUpdater(Context context, Request request, Intent intent){
+            this.context = context;
+            this.dialog = new ProgressDialog(context);
+            this.request = request;
+            this.intent = intent;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            converter.authMessage(request);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            client.setAuth(false);
+            allClear();
+            stopService(new Intent(GpsService.newIntent(context)));
+            System.out.println("стопарим сервис");
+            context.startActivity(intent);
+            super.onPostExecute(aVoid);
+            dialog.dismiss();
+            tokenManager.setToken(null);
+        }
     }
 }

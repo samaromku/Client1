@@ -77,7 +77,7 @@ public class TimePickerFragment extends DialogFragment {
                         }
                         Date date1 = new GregorianCalendar(year, month, day, hours, minutes).getTime();
                         Button activityChooseDate = (Button)getActivity().findViewById(R.id.choose_date);
-                        activityChooseDate.setText(dateUtil.dateForServer(date1));
+                        activityChooseDate.setText(dateUtil.getDDFromYY(dateUtil.dateForServer(date1)));
                     }
                 })
                 .create();
